@@ -4,22 +4,14 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Aleris.Models.Company
 {
-    public class CompanyMember
+    public class CompanyMember : IdentityUser
     {
-        [Key]
-        public int Id { get; set; }
-
         [Required]
         [MaxLength(100)]
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        [EmailAddress]
-        [MaxLength(100)]
-        public string Email { get; set; } = string.Empty;
-
-        [Required]
-        public Roles Role { get; set; } = Roles.Viewer; // Роля (Admin, Editor, Viewer)
+        public Roles Role { get; set; } = Roles.Viewer;
 
         public enum Roles
         {
@@ -33,7 +25,8 @@ namespace Aleris.Models.Company
 
         [ForeignKey("Company")]
         public int CompanyId { get; set; }
-
         public Company Company { get; set; } = null!;
     }
 }
+
+

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Aleris.Models.Company
 {
@@ -17,7 +16,7 @@ namespace Aleris.Models.Company
         public string Bulstat { get; set; } = string.Empty;
 
         [MaxLength(20)]
-        public string? VatNumber { get; set; } // Номер по ДДС (не е задължителен)
+        public string? VatNumber { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -28,7 +27,7 @@ namespace Aleris.Models.Company
         public string Address { get; set; } = string.Empty;
 
         [MaxLength(100)]
-        public string? Manager { get; set; } // М.О.Л (препоръчителен)
+        public string? Manager { get; set; }
 
         [Required]
         [Phone]
@@ -37,7 +36,6 @@ namespace Aleris.Models.Company
         [Required]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
-
 
         public ICollection<CompanyMember> CompanyMembers { get; set; } = new List<CompanyMember>();
         public CompanySettings CompanySettings { get; set; }
