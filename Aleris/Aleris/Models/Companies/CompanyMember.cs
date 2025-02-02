@@ -9,6 +9,10 @@ namespace Aleris.Models.Company
         [Key]
         public int Id { get; set; }
 
+        [ForeignKey("CompanyTeam")]
+        public int CompanyTeamId { get; set; }
+        public CompanyTeam CompanyTeam { get; set; } = null!;
+
         [Required]
         [MaxLength(100)]
         public string Name { get; set; } = string.Empty;
@@ -30,9 +34,5 @@ namespace Aleris.Models.Company
             [Display(Name = "Зрител")]
             Viewer
         }
-
-        [ForeignKey("Company")]
-        public int CompanyId { get; set; }
-        public Company Company { get; set; } = null!;
     }
 }

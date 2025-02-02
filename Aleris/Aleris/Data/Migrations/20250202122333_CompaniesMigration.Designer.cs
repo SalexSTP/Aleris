@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aleris.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250202131926_CompaniesMigration")]
+    [Migration("20250202122333_CompaniesMigration")]
     partial class CompaniesMigration
     {
         /// <inheritdoc />
@@ -28,10 +28,7 @@ namespace Aleris.Data.Migrations
             modelBuilder.Entity("Aleris.Models.Company.Company", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -47,6 +44,9 @@ namespace Aleris.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("CompanyTeamId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -82,7 +82,7 @@ namespace Aleris.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int>("CompanyTeamId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -100,7 +100,7 @@ namespace Aleris.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("CompanyTeamId");
 
                     b.ToTable("CompanyMembers");
                 });
@@ -142,10 +142,22 @@ namespace Aleris.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CompanyId")
-                        .IsUnique();
-
                     b.ToTable("CompanySettings");
+                });
+
+            modelBuilder.Entity("Aleris.Models.Company.CompanyTeam", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TeamName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompanyTeams");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -350,22 +362,33 @@ namespace Aleris.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Aleris.Models.Company.CompanyMember", b =>
+            modelBuilder.Entity("Aleris.Models.Company.Company", b =>
                 {
-                    b.HasOne("Aleris.Models.Company.Company", "Company")
-                        .WithMany("CompanyMembers")
-                        .HasForeignKey("CompanyId")
+                    b.HasOne("Aleris.Models.Company.CompanySettings", "CompanySettings")
+                        .WithOne("Company")
+                        .HasForeignKey("Aleris.Models.Company.Company", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
+                    b.Navigation("CompanySettings");
                 });
 
-            modelBuilder.Entity("Aleris.Models.Company.CompanySettings", b =>
+            modelBuilder.Entity("Aleris.Models.Company.CompanyMember", b =>
+                {
+                    b.HasOne("Aleris.Models.Company.CompanyTeam", "CompanyTeam")
+                        .WithMany("CompanyMembers")
+                        .HasForeignKey("CompanyTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CompanyTeam");
+                });
+
+            modelBuilder.Entity("Aleris.Models.Company.CompanyTeam", b =>
                 {
                     b.HasOne("Aleris.Models.Company.Company", "Company")
-                        .WithOne("CompanySettings")
-                        .HasForeignKey("Aleris.Models.Company.CompanySettings", "CompanyId")
+                        .WithOne("CompanyTeam")
+                        .HasForeignKey("Aleris.Models.Company.CompanyTeam", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -425,10 +448,19 @@ namespace Aleris.Data.Migrations
 
             modelBuilder.Entity("Aleris.Models.Company.Company", b =>
                 {
-                    b.Navigation("CompanyMembers");
-
-                    b.Navigation("CompanySettings")
+                    b.Navigation("CompanyTeam")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Aleris.Models.Company.CompanySettings", b =>
+                {
+                    b.Navigation("Company")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Aleris.Models.Company.CompanyTeam", b =>
+                {
+                    b.Navigation("CompanyMembers");
                 });
 #pragma warning restore 612, 618
         }
