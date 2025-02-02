@@ -38,8 +38,7 @@ namespace Aleris.Models.Company
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
 
+        public ICollection<CompanyMember> CompanyMembers { get; set; } = new List<CompanyMember>();
         public CompanySettings CompanySettings { get; set; }
-        public int CompanyTeamId { get; set; }
-        public CompanyTeam CompanyTeam { get; set; } = new CompanyTeam();
     }
 }
