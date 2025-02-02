@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-Aleris-ae6e47bf-4a2e-48b9-b22d-5a0c7ad20e3d</UserSecretsId>
+    <UserSecretsId>aspnet-Aleris-c8b80f90-de4e-4add-b7ad-ec4bf2b35305</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
