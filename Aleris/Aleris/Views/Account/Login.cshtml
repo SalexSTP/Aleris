@@ -1,0 +1,28 @@
+﻿@model User
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="post" asp-controller="Account" asp-action="Login">
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="mb-3">
+        <label for="Email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
+        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="mb-3">
+        <label for="Password" class="form-label">Password</label>
+        <input type="password" class="form-control" id="Password" name="Password" value="@Model.Password" required />
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>

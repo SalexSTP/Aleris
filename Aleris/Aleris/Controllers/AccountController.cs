@@ -41,5 +41,36 @@ namespace Aleris.Controllers
 
             return View(user);
         }
+        public IActionResult Login()
+        {
+            return View(new User());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(User user)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+
+                if (existingUser == null || existingUser.Password != user.Password)
+                {
+                    ModelState.AddModelError(string.Empty, "Грешен имейл или парола.");
+                    return View(user); // Return the same view to show validation messages
+                }
+
+                // Store user details in session
+                HttpContext.Session.SetString("UserEmail", existingUser.Email);
+                HttpContext.Session.SetString("UserName", existingUser.Name);
+                HttpContext.Session.SetString("UserId", existingUser.Id.ToString());
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(user);
+        }
+
+
     }
 }
