@@ -1,17 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Aleris.Models.Company
+namespace Aleris.Models
 {
     public class CompanySettings
     {
         [Key]
         public int Id { get; set; }
 
+        [Required]
         [ForeignKey("Company")]
         public int CompanyId { get; set; }
-        public Company Company { get; set; } = null!;
+
+        [InverseProperty("CompanySettings")]
+        public Company? Company { get; set; }
 
         public VatRegistered IsVatRegistered { get; set; } = VatRegistered.Yes; // Фирмата регистрирана ли е по ЗДДС?
         public IsVatIncluded IsVatIncludedInPrices { get; set; } = IsVatIncluded.Yes; // Продавачните цени са с включен ДДС
@@ -110,6 +112,18 @@ namespace Aleris.Models.Company
             Yes = 1,
             [Display(Name = "Не")]
             No = 0
+        }
+
+        public CompanySettings()
+        {
+            IsVatRegistered = VatRegistered.Yes;
+            IsVatIncludedInPrices = IsVatIncluded.Yes;
+            PricePrecision = PrecisionOfPrice.TwoDecimals;
+            QuantityPrecision = PrecisionOfQuantity.OneDecimal;
+            AllowNegativeQuantities = NegativeQuantities.Yes;
+            MethodOfRevision = RevisionMethod.DeliveryPrice;
+            AutoProduction = IsAutoProduction.No;
+            WorkWithTraders = Traders.No;
         }
     }
 }
