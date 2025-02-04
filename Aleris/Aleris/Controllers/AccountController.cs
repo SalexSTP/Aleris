@@ -16,6 +16,7 @@ namespace Aleris.Controllers
         {
             _context = context;
         }
+        public bool isLogged = false;
 
         // GET: Register
         public IActionResult Register()
@@ -66,9 +67,17 @@ namespace Aleris.Controllers
             HttpContext.Session.SetString("UserEmail", existingUser.Email);
             HttpContext.Session.SetString("UserName", existingUser.Name);
             HttpContext.Session.SetString("UserId", existingUser.Id.ToString());
+            isLogged = true;
 
             return RedirectToAction("Index", "Home");
         }
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            isLogged = false;
+            return RedirectToAction("Index", "Home");
+        }
+
 
         private string HashPassword(string password)
         {
