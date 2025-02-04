@@ -3,6 +3,8 @@ using Aleris.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Aleris.Controllers
 {
@@ -33,6 +35,8 @@ namespace Aleris.Controllers
                     return View(user);
                 }
 
+                user.Password = HashPassword(user.Password);
+
                 _context.Users.Add(user);
                 _context.SaveChanges();
 
@@ -50,27 +54,36 @@ namespace Aleris.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Login(User user)
         {
-            if (ModelState.IsValid)
+            var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+
+            if (existingUser == null || existingUser.Password != HashPassword(user.Password))
             {
-                var existingUser = _context.Users.FirstOrDefault(u => u.Email == user.Email);
-
-                if (existingUser == null || existingUser.Password != user.Password)
-                {
-                    ModelState.AddModelError(string.Empty, "Грешен имейл или парола.");
-                    return View(user); // Return the same view to show validation messages
-                }
-
-                // Store user details in session
-                HttpContext.Session.SetString("UserEmail", existingUser.Email);
-                HttpContext.Session.SetString("UserName", existingUser.Name);
-                HttpContext.Session.SetString("UserId", existingUser.Id.ToString());
-
-                return RedirectToAction("Index", "Home");
+                ModelState.AddModelError(string.Empty, "Грешен имейл или парола.");
+                return View(user); // Return the same view to show validation messages
             }
 
-            return View(user);
+            // Store user details in session
+            HttpContext.Session.SetString("UserEmail", existingUser.Email);
+            HttpContext.Session.SetString("UserName", existingUser.Name);
+            HttpContext.Session.SetString("UserId", existingUser.Id.ToString());
+
+            return RedirectToAction("Index", "Home");
         }
 
+        private string HashPassword(string password)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
 
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+
+                return builder.ToString();
+            }
+        }
     }
 }

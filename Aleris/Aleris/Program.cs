@@ -3,6 +3,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add session services
+builder.Services.AddSession();
+builder.Services.AddDistributedMemoryCache(); // Required for session storage
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -25,6 +29,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseSession(); // Enable session usage
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
