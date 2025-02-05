@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aleris.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250203125717_InitialCreate")]
+    [Migration("20250205161313_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -52,7 +52,6 @@ namespace Aleris.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Manager")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 

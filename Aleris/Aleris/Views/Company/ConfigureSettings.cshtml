@@ -1,0 +1,123 @@
+﻿@using System.ComponentModel.DataAnnotations
+@model Aleris.Models.CompanySettings
+
+@{
+    ViewData["Title"] = "Configure Settings for " + Model.Company.Name;
+}
+
+<h2>Configure Settings for @Model.Company.Name</h2>
+
+<form asp-action="SaveSettings" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- VAT Registered -->
+    <div class="mb-3">
+        <label class="form-label">Is VAT Registered?</label>
+        @Html.DropDownListFor(model => model.IsVatRegistered,
+                 new SelectList(Enum.GetValues(typeof(Aleris.Models.CompanySettings.VatRegistered)).Cast<Aleris.Models.CompanySettings.VatRegistered>().Select(e => new { Value = e, Text = e.ToString() }),
+                 "Value", "Text", Model.IsVatRegistered)
+                 )
+        <span asp-validation-for="IsVatRegistered" class="text-danger"></span>
+    </div>
+
+    <!-- VAT Included in Prices -->
+    <div class="mb-3">
+        <label class="form-label">Is VAT Included in Prices?</label>
+        @Html.DropDownListFor(model => model.IsVatIncludedInPrices,
+                 new SelectList(Enum.GetValues(typeof(Aleris.Models.CompanySettings.IsVatIncluded)).Cast<Aleris.Models.CompanySettings.IsVatIncluded>().Select(e => new { Value = e, Text = e.ToString() }),
+                 "Value", "Text", Model.IsVatIncludedInPrices)
+                 )
+        <span asp-validation-for="IsVatIncludedInPrices" class="text-danger"></span>
+    </div>
+
+    <!-- Price Precision -->
+    <div class="mb-3">
+        <label asp-for="PricePrecision" class="form-label">Price Precision</label>
+        @Html.DropDownListFor(
+            model => model.PricePrecision,
+            new SelectList(
+                Enum.GetValues(typeof(Aleris.Models.CompanySettings.PrecisionOfPrice))
+                .Cast<Aleris.Models.CompanySettings.PrecisionOfPrice>()
+                .Select(e => new { 
+                    Value = e, 
+                    Text = e.GetType()
+                            .GetField(e.ToString())
+                            .GetCustomAttributes(typeof(DisplayAttribute), false)
+                            .Cast<DisplayAttribute>()
+                            .SingleOrDefault()
+                            ?.Name ?? e.ToString() }), // Get the Display attribute or fallback to enum name
+            "Value", "Text", 
+            Model.PricePrecision))
+        <span asp-validation-for="PricePrecision" class="text-danger"></span>
+    </div>
+
+    <!-- Quantity Precision -->
+    
+    <div class="mb-3">
+        <label asp-for="QuantityPrecision" class="form-label">Quantity Precision</label>
+        @Html.DropDownListFor(
+            model => model.QuantityPrecision,
+            new SelectList(
+                Enum.GetValues(typeof(Aleris.Models.CompanySettings.PrecisionOfQuantity))
+                .Cast<Aleris.Models.CompanySettings.PrecisionOfQuantity>()
+                .Select(e => new { 
+                    Value = e, 
+                    Text = e.GetType()
+                              .GetField(e.ToString())
+                              .GetCustomAttributes(typeof(DisplayAttribute), false)
+                              .Cast<DisplayAttribute>()
+                              .SingleOrDefault()
+                              ?.Name ?? e.ToString() }), // Get the Display attribute or fallback to enum name
+            "Value", "Text", 
+            Model.QuantityPrecision))
+        <span asp-validation-for="QuantityPrecision" class="text-danger"></span>
+    </div>
+
+    <!-- Allow Negative Quantities -->
+    <div class="mb-3">
+        <label class="form-label">Allow Negative Quantities?</label>
+        @Html.DropDownListFor(model => model.AllowNegativeQuantities,
+                 new SelectList(Enum.GetValues(typeof(Aleris.Models.CompanySettings.NegativeQuantities)).Cast<Aleris.Models.CompanySettings.NegativeQuantities>().Select(e => new { Value = e, Text = e.ToString() }),
+                 "Value", "Text", Model.AllowNegativeQuantities)
+                 )
+        <span asp-validation-for="AllowNegativeQuantities" class="text-danger"></span>
+    </div>
+
+    <!-- Revision Method -->
+    <div class="mb-3">
+        <label class="form-label">Revision Method</label>
+        @Html.DropDownListFor(model => model.MethodOfRevision,
+                 new SelectList(Enum.GetValues(typeof(Aleris.Models.CompanySettings.RevisionMethod)).Cast<Aleris.Models.CompanySettings.RevisionMethod>().Select(e => new { Value = e, Text = e.ToString() }),
+                 "Value", "Text", Model.MethodOfRevision)
+                 )
+        <span asp-validation-for="MethodOfRevision" class="text-danger"></span>
+    </div>
+
+    <!-- Auto Production -->
+    <div class="mb-3">
+        <label class="form-label">Auto Production</label>
+        @Html.DropDownListFor(model => model.AutoProduction,
+                 new SelectList(Enum.GetValues(typeof(Aleris.Models.CompanySettings.IsAutoProduction)).Cast<Aleris.Models.CompanySettings.IsAutoProduction>().Select(e => new { Value = e, Text = e.ToString() }),
+                 "Value", "Text", Model.AutoProduction)
+                 )
+        <span asp-validation-for="AutoProduction" class="text-danger"></span>
+    </div>
+
+    <!-- Work With Traders -->
+    <div class="mb-3">
+        <label class="form-label">Work With Traders</label>
+        @Html.DropDownListFor(model => model.WorkWithTraders,
+                 new SelectList(Enum.GetValues(typeof(Aleris.Models.CompanySettings.Traders)).Cast<Aleris.Models.CompanySettings.Traders>().Select(e => new { Value = e, Text = e.ToString() }),
+                 "Value", "Text", Model.WorkWithTraders)
+                 )
+        <span asp-validation-for="WorkWithTraders" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

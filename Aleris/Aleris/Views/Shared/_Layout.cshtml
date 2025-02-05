@@ -19,15 +19,44 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (Context.Session.GetString("UserEmail") != null)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" href="#" id="companiesDropdown" role="button" data-bs-toggle="dropdown">
+                                    Companies
+                                </a>
+                                <ul class="dropdown-menu">
+                                    @if (ViewBag.Companies != null && ViewBag.Companies.Count > 0)
+                                    {
+                                        @foreach (var company in ViewBag.Companies)
+                                        {
+                                            <li><a class="dropdown-item" href="@Url.Action("Details", "Company", new { id = company.Id })">@company.Name</a></li>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <li><span class="dropdown-item text-muted">No companies</span></li>
+                                        <li>
+                                            <a class="dropdown-item text-primary" href="@Url.Action("CreateCompany", "Company")">
+                                                <i class="bi bi-plus-lg"></i> Create Company
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            </li>
+                        }
                     </ul>
 
-                    
+
                     <ul class="navbar-nav ms-auto">
                         @if (Context.Session.GetString("UserEmail") != null)
                         {

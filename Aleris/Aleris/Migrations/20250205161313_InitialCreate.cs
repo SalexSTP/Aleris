@@ -21,7 +21,7 @@ namespace Aleris.Migrations
                     VatNumber = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: true),
                     City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Manager = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Manager = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },

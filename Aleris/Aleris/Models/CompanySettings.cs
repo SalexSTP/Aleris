@@ -20,7 +20,7 @@ namespace Aleris.Models
         public PrecisionOfPrice PricePrecision { get; set; } = PrecisionOfPrice.TwoDecimals; // Точност на цените    
         public PrecisionOfQuantity QuantityPrecision { get; set; } = PrecisionOfQuantity.OneDecimal; // Точност на количествата
         public NegativeQuantities AllowNegativeQuantities { get; set; } = NegativeQuantities.Yes; // Разрешаване на отрицателни количества
-        public RevisionMethod MethodOfRevision { get; set; } = RevisionMethod.DeliveryPrice; // Метод на ревизиране
+        public RevisionMethod MethodOfRevision { get; set; } = RevisionMethod.Delivery; // Метод на ревизиране
         public IsAutoProduction AutoProduction { get; set; } = IsAutoProduction.No; // Автоматично производство
         public Traders WorkWithTraders { get; set; } = Traders.No; // Работа с търговци
 
@@ -93,9 +93,9 @@ namespace Aleris.Models
         public enum RevisionMethod
         {
             [Display(Name = "Доставна цена")]
-            DeliveryPrice,
+            Delivery,
             [Display(Name = "Продажна цена")]
-            SellingPrice
+            Selling
         }
 
         public enum IsAutoProduction
@@ -121,7 +121,7 @@ namespace Aleris.Models
             PricePrecision = PrecisionOfPrice.TwoDecimals;
             QuantityPrecision = PrecisionOfQuantity.OneDecimal;
             AllowNegativeQuantities = NegativeQuantities.Yes;
-            MethodOfRevision = RevisionMethod.DeliveryPrice;
+            MethodOfRevision = RevisionMethod.Delivery;
             AutoProduction = IsAutoProduction.No;
             WorkWithTraders = Traders.No;
         }

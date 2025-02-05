@@ -27,7 +27,7 @@ namespace Aleris.Models
         public string Address { get; set; }
 
         [MaxLength(50)]
-        public string Manager { get; set; }
+        public string? Manager { get; set; }
 
         [Required]
         [Length(9, 9)]

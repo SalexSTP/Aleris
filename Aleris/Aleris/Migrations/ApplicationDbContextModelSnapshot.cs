@@ -49,7 +49,6 @@ namespace Aleris.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Manager")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
