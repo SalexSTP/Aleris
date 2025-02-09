@@ -30,7 +30,7 @@ namespace Aleris.Models
         public string? Manager { get; set; }
 
         [Required]
-        [Length(9, 9)]
+        [Length(9, 10)]
         [Phone]
         public string PhoneNumber { get; set; }
 

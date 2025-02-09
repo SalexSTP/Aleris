@@ -36,11 +36,6 @@
                                     else
                                     {
                                         <li><span class="dropdown-item text-muted">No companies</span></li>
-                                        <li>
-                                            <a class="dropdown-item text-primary" href="@Url.Action("CreateCompany", "Company")">
-                                                <i class="bi bi-plus-lg"></i> Create Company
-                                            </a>
-                                        </li>
                                     }
                                 </ul>
                             </li>
@@ -56,15 +51,20 @@
                         }
                     </ul>
 
-
                     <ul class="navbar-nav ms-auto">
                         @if (Context.Session.GetString("UserEmail") != null)
                         {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="@Url.Action("CreateCompany", "Company")">
+                                    <i class="bi bi-plus-lg"></i> Create Company
+                                </a>
+                            </li>
+
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                                     @Context.Session.GetString("UserName")
                                 </a>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu dropdown-menu-end">
                                     <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout">Logout</a></li>
                                 </ul>
                             </li>

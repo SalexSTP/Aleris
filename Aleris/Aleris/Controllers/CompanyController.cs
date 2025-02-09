@@ -32,14 +32,27 @@ namespace Aleris.Controllers
         {
             if (ModelState.IsValid)
             {
+                
+                var existingCompany = await _context.Companies
+                    .FirstOrDefaultAsync(c => c.Bulstat == company.Bulstat || c.Name == company.Name);
+
+                if (existingCompany != null)
+                {
+                    if (existingCompany.Bulstat == company.Bulstat)
+                        ModelState.AddModelError("Bulstat", "A company with this BULSTAT already exists.");
+                    if (existingCompany.Name == company.Name)
+                        ModelState.AddModelError("Name", "A company with this Name already exists.");
+
+                    return View(company); 
+                }
+
                 // Add the company to the database
                 _context.Companies.Add(company);
                 await _context.SaveChangesAsync();
 
                 // Add the current user as a CompanyMember with Admin role
                 string? userEmail = HttpContext.Session.GetString("UserEmail");
-                var user = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Email == userEmail);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
 
                 if (user != null)
                 {
@@ -64,6 +77,7 @@ namespace Aleris.Controllers
 
             return View(company);
         }
+
 
         [HttpGet]
         public IActionResult ConfigureSettings(int companyId)
