@@ -1,8 +1,6 @@
 using Aleris.Data;
 using Aleris.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace Aleris.Controllers
@@ -19,8 +17,28 @@ namespace Aleris.Controllers
             _context = context;
         }
 
+        private void PopulateCompaniesInViewBag()
+        {
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            if (!string.IsNullOrEmpty(userEmail))
+            {
+                var userCompanies = _context.CompanyMembers
+                    .Where(cm => cm.User.Email == userEmail)
+                    .Select(cm => cm.Company)
+                    .ToList();
+
+                ViewBag.Companies = userCompanies;
+            }
+            else
+            {
+                ViewBag.Companies = new List<Company>();
+            }
+        }
+
         public IActionResult Index()
         {
+            PopulateCompaniesInViewBag();
             return View();
         }
 

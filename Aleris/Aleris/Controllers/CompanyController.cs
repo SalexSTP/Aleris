@@ -2,7 +2,6 @@
 using Aleris.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace Aleris.Controllers
 {
@@ -32,7 +31,6 @@ namespace Aleris.Controllers
         {
             if (ModelState.IsValid)
             {
-                
                 var existingCompany = await _context.Companies
                     .FirstOrDefaultAsync(c => c.Bulstat == company.Bulstat || c.Name == company.Name);
 
@@ -43,7 +41,7 @@ namespace Aleris.Controllers
                     if (existingCompany.Name == company.Name)
                         ModelState.AddModelError("Name", "A company with this Name already exists.");
 
-                    return View(company); 
+                    return View(company);
                 }
 
                 // Add the company to the database
@@ -67,56 +65,56 @@ namespace Aleris.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                // Store the company in TempData and keep it for next request
-                TempData["Company"] = JsonConvert.SerializeObject(company);
-                TempData.Keep("Company");
-
-                // Redirect to ConfigureSettings page
-                return RedirectToAction("ConfigureSettings", "Company");
+                // Redirect to ConfigureSettings page, passing companyId as a parameter
+                return RedirectToAction("ConfigureSettings", "Company", new { companyId = company.Id });
             }
 
             return View(company);
         }
 
-
         [HttpGet]
-        public IActionResult ConfigureSettings(int companyId)
+        public async Task<IActionResult> ConfigureSettings(int companyId)
         {
-            // Retrieve company from TempData
-            var companyJson = TempData["Company"]?.ToString();
-            if (companyJson == null)
+            var company = await _context.Companies.FindAsync(companyId);
+            if (company == null)
             {
                 return NotFound();
             }
-
-            var company = JsonConvert.DeserializeObject<Company>(companyJson);
-            TempData["Company"] = JsonConvert.SerializeObject(company);
-            TempData.Keep("Company");
 
             var settings = new CompanySettings { Company = company };
             return View("ConfigureSettings", settings);
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SaveSettingsAsync(CompanySettings settings)
+        public async Task<IActionResult> SaveSettings(CompanySettings settings)
         {
             if (!ModelState.IsValid)
             {
-                // Handle invalid settings
-                return View(settings);
+                return View("ConfigureSettings", settings);
             }
 
-            // Retrieve the company object from TempData and assign settings to it
-            var companyJson = TempData["Company"].ToString();
-            var company = JsonConvert.DeserializeObject<Company>(companyJson);
+            // Check if CompanyId is present
+            if (settings.CompanyId == 0)
+            {
+                return BadRequest("Company ID is missing.");
+            }
+
+            // Retrieve the company from the database
+            var company = await _context.Companies
+                .Include(c => c.CompanySettings)
+                .FirstOrDefaultAsync(c => c.Id == settings.CompanyId);
+
+            if (company == null)
+            {
+                return NotFound("Company not found.");
+            }
+
+            // Assign the settings to the company
             company.CompanySettings = settings;
+            await _context.SaveChangesAsync();
 
-            // Add the company with the configured settings to the database
-            _context.Companies.Add(company);
-            _context.SaveChanges();
-
-            // Redirect to the next step, e.g., add team or finish
             return RedirectToAction("Index", "Home");
         }
     }
