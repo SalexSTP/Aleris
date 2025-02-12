@@ -9,10 +9,12 @@ namespace Aleris.Models
         public int Id { get; set; }
 
         [Required]
+        [ForeignKey("User")]
         public int UserId { get; set; }
         public User User { get; set; }
 
         [Required]
+        [ForeignKey("Company")]
         public int CompanyId { get; set; }
         public Company Company { get; set; }
 

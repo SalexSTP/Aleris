@@ -43,6 +43,10 @@ namespace Aleris.Models
 
         public ICollection<CompanyMember> TeamMembers { get; set; } = new List<CompanyMember>();
 
+        public ICollection<CompanyStorage> Storage { get; set; } = new List<CompanyStorage>();
+        public ICollection<CompanyPurchase> Purchases { get; set; } = new List<CompanyPurchase>();
+        public ICollection<CompanySale> Sales { get; set; } = new List<CompanySale>();
+
         public Company()
         {
             CompanySettings = new CompanySettings();

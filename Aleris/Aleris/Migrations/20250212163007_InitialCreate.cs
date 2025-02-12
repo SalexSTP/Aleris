@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -74,6 +75,29 @@ namespace Aleris.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CompanyStorages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyStorages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CompanyStorages_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CompanyMembers",
                 columns: table => new
                 {
@@ -100,6 +124,65 @@ namespace Aleris.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "CompanyPurchases",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyPurchases", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CompanyPurchases_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CompanyPurchases_CompanyStorages_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "CompanyStorages",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CompanySales",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanySales", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CompanySales_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CompanySales_CompanyStorages_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "CompanyStorages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_CompanyMembers_CompanyId",
                 table: "CompanyMembers",
@@ -111,10 +194,35 @@ namespace Aleris.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CompanyPurchases_CompanyId",
+                table: "CompanyPurchases",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanyPurchases_ProductId",
+                table: "CompanyPurchases",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanySales_CompanyId",
+                table: "CompanySales",
+                column: "CompanyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanySales_ProductId",
+                table: "CompanySales",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CompanySettings_CompanyId",
                 table: "CompanySettings",
                 column: "CompanyId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompanyStorages_CompanyId",
+                table: "CompanyStorages",
+                column: "CompanyId");
         }
 
         /// <inheritdoc />
@@ -124,10 +232,19 @@ namespace Aleris.Migrations
                 name: "CompanyMembers");
 
             migrationBuilder.DropTable(
+                name: "CompanyPurchases");
+
+            migrationBuilder.DropTable(
+                name: "CompanySales");
+
+            migrationBuilder.DropTable(
                 name: "CompanySettings");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "CompanyStorages");
 
             migrationBuilder.DropTable(
                 name: "Companies");
