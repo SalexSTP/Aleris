@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Aleris.styles.css" asp-append-version="true" />
+
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <header>
@@ -57,9 +59,7 @@
                         @if (Context.Session.GetString("UserEmail") != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" href="@Url.Action("CreateCompany", "Company")">
-                                    <i class="bi bi-plus-lg"></i> Create Company
-                                </a>
+                                <a class="nav-link text-dark" href="@Url.Action("CreateCompany", "Company")">Create Company</a>
                             </li>
 
                             <li class="nav-item dropdown">
@@ -67,7 +67,7 @@
                                     @Context.Session.GetString("UserName")
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Logout", "Account")">Logout</a></li>
                                 </ul>
                             </li>
                         }
@@ -86,7 +86,7 @@
         </nav>
     </header>
 
-    <div class="container">
+    <div class="@(ViewData["IsCompanyPage"] != null ? "container-fluid" : "container")">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -99,7 +99,7 @@
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

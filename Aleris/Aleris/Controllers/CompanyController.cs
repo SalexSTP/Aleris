@@ -126,6 +126,7 @@ namespace Aleris.Controllers
             {
                 return NotFound();
             }
+            ViewData["IsCompanyPage"] = true;
 
             return View("CompanyMain", company);
         }
