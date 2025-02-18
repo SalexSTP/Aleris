@@ -71,7 +71,7 @@ namespace Aleris.Controllers
 
             return View(company);
         }
-
+         
         [HttpGet]
         public async Task<IActionResult> ConfigureSettings(int companyId)
         {
@@ -84,7 +84,6 @@ namespace Aleris.Controllers
             var settings = new CompanySettings { Company = company };
             return View("ConfigureSettings", settings);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -116,6 +115,19 @@ namespace Aleris.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CompanyMain(int id)
+        {
+            var company = await _context.Companies.FindAsync(id);
+
+            if (company == null)
+            {
+                return NotFound();
+            }
+
+            return View("CompanyMain", company);
         }
     }
 }

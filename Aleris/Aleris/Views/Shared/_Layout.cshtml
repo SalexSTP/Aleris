@@ -30,7 +30,9 @@
                                     {
                                         @foreach (var company in ViewBag.Companies)
                                         {
-                                            <li><a class="dropdown-item" href="@Url.Action("Details", "Company", new { id = company.Id })">@company.Name</a></li>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.Action("CompanyMain", "Company", new { id = company.Id })">@company.Name</a>
+                                            </li>
                                         }
                                     }
                                     else
