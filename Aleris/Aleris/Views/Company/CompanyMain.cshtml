@@ -4,15 +4,6 @@
     ViewData["Title"] = Model.Name;
 }
 
-<div class="sidebar">
-    <h4 class="text-center">@Model.Name</h4>
-    <a href="#"><i class="bi bi-bar-chart"></i> Statistics</a>
-    <a href="#"><i class="bi bi-cart"></i> Purchases</a>
-    <a href="#"><i class="bi bi-box"></i> Storage</a>
-    <a href="#"><i class="bi bi-cash-stack"></i> Sales</a>
-    <a href="#"><i class="bi bi-people"></i> Members</a>
-    <a href="#"><i class="bi bi-gear"></i> Settings</a>
-</div>
 <div class="content">
     <h2>Welcome to @Model.Name</h2>
     <p>Content goes here...</p>
@@ -20,32 +11,6 @@
 
 @section Styles {
     <style>
-        .sidebar {
-            height: 100vh;
-            width: 250px;
-            background-color: #007bff;
-            color: white;
-            padding-top: 20px;
-            position: fixed;
-        }
-
-            .sidebar a {
-                color: white;
-                padding: 10px 20px;
-                display: flex;
-                align-items: center;
-                text-decoration: none;
-                transition: background 0.3s;
-            }
-
-                .sidebar a:hover {
-                    background: rgba(255, 255, 255, 0.2);
-                }
-
-            .sidebar i {
-                margin-right: 10px;
-            }
-
         .content {
             margin-left: 260px;
             padding: 20px;

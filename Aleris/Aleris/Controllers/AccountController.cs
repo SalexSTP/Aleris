@@ -78,7 +78,6 @@ namespace Aleris.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
         private string HashPassword(string password)
         {
             using (SHA256 sha256Hash = SHA256.Create())

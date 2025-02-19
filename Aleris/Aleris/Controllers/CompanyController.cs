@@ -5,13 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aleris.Controllers
 {
-    public class CompanyController : Controller
+    public class CompanyController : BaseController
     {
-        protected readonly ApplicationDbContext _context;
 
-        public CompanyController(ApplicationDbContext context)
+        public CompanyController(ApplicationDbContext context) : base(context)
         {
-            _context = context;
         }
 
         public IActionResult Index()

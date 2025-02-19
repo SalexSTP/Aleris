@@ -5,40 +5,18 @@ using System.Diagnostics;
 
 namespace Aleris.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext _context;
 
-        // Inject the ApplicationDbContext in the constructor
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
+        : base(context)
         {
             _logger = logger;
-            _context = context;
-        }
-
-        private void PopulateCompaniesInViewBag()
-        {
-            var userEmail = HttpContext.Session.GetString("UserEmail");
-
-            if (!string.IsNullOrEmpty(userEmail))
-            {
-                var userCompanies = _context.CompanyMembers
-                    .Where(cm => cm.User.Email == userEmail)
-                    .Select(cm => cm.Company)
-                    .ToList();
-
-                ViewBag.Companies = userCompanies;
-            }
-            else
-            {
-                ViewBag.Companies = new List<Company>();
-            }
         }
 
         public IActionResult Index()
         {
-            PopulateCompaniesInViewBag();
             return View();
         }
 
