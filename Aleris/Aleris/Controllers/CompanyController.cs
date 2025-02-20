@@ -2,14 +2,26 @@
 using Aleris.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Aleris.Controllers
 {
     public class CompanyController : BaseController
     {
-
         public CompanyController(ApplicationDbContext context) : base(context)
         {
+        }
+
+        private async Task<bool> UserHasAccessToCompany(int companyId)
+        {
+            string? userEmail = HttpContext.Session.GetString("UserEmail");
+            if (string.IsNullOrEmpty(userEmail)) return false;
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+            if (user == null) return false;
+
+            return await _context.CompanyMembers
+                .AnyAsync(cm => cm.UserId == user.Id && cm.CompanyId == companyId);
         }
 
         public IActionResult Index()
@@ -42,11 +54,9 @@ namespace Aleris.Controllers
                     return View(company);
                 }
 
-                // Add the company to the database
                 _context.Companies.Add(company);
                 await _context.SaveChangesAsync();
 
-                // Add the current user as a CompanyMember with Admin role
                 string? userEmail = HttpContext.Session.GetString("UserEmail");
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
 
@@ -56,23 +66,27 @@ namespace Aleris.Controllers
                     {
                         UserId = user.Id,
                         CompanyId = company.Id,
-                        Role = UserRole.Admin // Assigning Admin role
+                        Role = UserRole.Admin
                     };
 
                     _context.CompanyMembers.Add(companyMember);
                     await _context.SaveChangesAsync();
                 }
 
-                // Redirect to ConfigureSettings page, passing companyId as a parameter
                 return RedirectToAction("ConfigureSettings", "Company", new { companyId = company.Id });
             }
 
             return View(company);
         }
-         
+
         [HttpGet]
         public async Task<IActionResult> ConfigureSettings(int companyId)
         {
+            if (!await UserHasAccessToCompany(companyId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var company = await _context.Companies.FindAsync(companyId);
             if (company == null)
             {
@@ -92,13 +106,16 @@ namespace Aleris.Controllers
                 return View("ConfigureSettings", settings);
             }
 
-            // Check if CompanyId is present
             if (settings.CompanyId == 0)
             {
                 return BadRequest("Company ID is missing.");
             }
 
-            // Retrieve the company from the database
+            if (!await UserHasAccessToCompany(settings.CompanyId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var company = await _context.Companies
                 .Include(c => c.CompanySettings)
                 .FirstOrDefaultAsync(c => c.Id == settings.CompanyId);
@@ -108,7 +125,6 @@ namespace Aleris.Controllers
                 return NotFound("Company not found.");
             }
 
-            // Assign the settings to the company
             company.CompanySettings = settings;
             await _context.SaveChangesAsync();
 
@@ -118,84 +134,108 @@ namespace Aleris.Controllers
         [HttpGet]
         public async Task<IActionResult> Statistics(int id)
         {
-            var company = await _context.Companies.FindAsync(id);
+            if (!await UserHasAccessToCompany(id))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
+            var company = await _context.Companies.FindAsync(id);
             if (company == null)
             {
                 return NotFound();
             }
-            ViewData["IsCompanyPage"] = true;
 
+            ViewData["IsCompanyPage"] = true;
             return View("Statistics", company);
         }
 
         [HttpGet]
         public async Task<IActionResult> Purchases(int id)
         {
-            var company = await _context.Companies.FindAsync(id);
+            if (!await UserHasAccessToCompany(id))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
+            var company = await _context.Companies.FindAsync(id);
             if (company == null)
             {
                 return NotFound();
             }
-            ViewData["IsCompanyPage"] = true;
 
+            ViewData["IsCompanyPage"] = true;
             return View("Purchases", company);
         }
 
         [HttpGet]
         public async Task<IActionResult> Storage(int id)
         {
-            var company = await _context.Companies.FindAsync(id);
+            if (!await UserHasAccessToCompany(id))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
+            var company = await _context.Companies.FindAsync(id);
             if (company == null)
             {
                 return NotFound();
             }
-            ViewData["IsCompanyPage"] = true;
 
+            ViewData["IsCompanyPage"] = true;
             return View("Storage", company);
         }
 
         [HttpGet]
         public async Task<IActionResult> Sales(int id)
         {
-            var company = await _context.Companies.FindAsync(id);
+            if (!await UserHasAccessToCompany(id))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
+            var company = await _context.Companies.FindAsync(id);
             if (company == null)
             {
                 return NotFound();
             }
-            ViewData["IsCompanyPage"] = true;
 
+            ViewData["IsCompanyPage"] = true;
             return View("Sales", company);
         }
 
         [HttpGet]
         public async Task<IActionResult> Members(int id)
         {
-            var company = await _context.Companies.FindAsync(id);
+            if (!await UserHasAccessToCompany(id))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
+            var company = await _context.Companies.FindAsync(id);
             if (company == null)
             {
                 return NotFound();
             }
-            ViewData["IsCompanyPage"] = true;
 
+            ViewData["IsCompanyPage"] = true;
             return View("Members", company);
         }
 
         [HttpGet]
         public async Task<IActionResult> Settings(int id)
         {
-            var company = await _context.Companies.FindAsync(id);
+            if (!await UserHasAccessToCompany(id))
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
+            var company = await _context.Companies.FindAsync(id);
             if (company == null)
             {
                 return NotFound();
             }
-            ViewData["IsCompanyPage"] = true;
 
+            ViewData["IsCompanyPage"] = true;
             return View("Settings", company);
         }
     }

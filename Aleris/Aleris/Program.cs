@@ -19,10 +19,12 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-      // This creates the database if it doesn't exist and applies migrations
+    //dbContext.Database.Migrate();  // This creates the database if it doesn't exist and applies migrations
+
+    // This creates the database if it doesn't exist and applies migrations
 }
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline. 
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
