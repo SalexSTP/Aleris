@@ -116,7 +116,7 @@ namespace Aleris.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> CompanyMain(int id)
+        public async Task<IActionResult> Statistics(int id)
         {
             var company = await _context.Companies.FindAsync(id);
 
@@ -126,7 +126,77 @@ namespace Aleris.Controllers
             }
             ViewData["IsCompanyPage"] = true;
 
-            return View("CompanyMain", company);
+            return View("Statistics", company);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Purchases(int id)
+        {
+            var company = await _context.Companies.FindAsync(id);
+
+            if (company == null)
+            {
+                return NotFound();
+            }
+            ViewData["IsCompanyPage"] = true;
+
+            return View("Purchases", company);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Storage(int id)
+        {
+            var company = await _context.Companies.FindAsync(id);
+
+            if (company == null)
+            {
+                return NotFound();
+            }
+            ViewData["IsCompanyPage"] = true;
+
+            return View("Storage", company);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Sales(int id)
+        {
+            var company = await _context.Companies.FindAsync(id);
+
+            if (company == null)
+            {
+                return NotFound();
+            }
+            ViewData["IsCompanyPage"] = true;
+
+            return View("Sales", company);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Members(int id)
+        {
+            var company = await _context.Companies.FindAsync(id);
+
+            if (company == null)
+            {
+                return NotFound();
+            }
+            ViewData["IsCompanyPage"] = true;
+
+            return View("Members", company);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Settings(int id)
+        {
+            var company = await _context.Companies.FindAsync(id);
+
+            if (company == null)
+            {
+                return NotFound();
+            }
+            ViewData["IsCompanyPage"] = true;
+
+            return View("Settings", company);
         }
     }
 }
