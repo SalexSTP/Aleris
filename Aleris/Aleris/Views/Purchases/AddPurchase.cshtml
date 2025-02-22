@@ -1,0 +1,99 @@
+﻿@model Aleris.Models.CompanyPurchase
+
+@{
+    ViewData["Title"] = "Add Purchase";
+
+
+
+    var storageProducts = ViewBag.StorageProducts as List<string> ?? new List<string>();
+}
+
+<div class="content">
+    <h1>Add Purchase</h1>
+
+    <!-- Display validation errors -->
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <form method="post" action="@Url.Action("AddPurchase", "Purchases")">
+        <!-- Hidden fields for CompanyId and ProductId -->
+        <input type="hidden" name="CompanyId" value="@Model.CompanyId" />
+        <input type="hidden" name="ProductId" value="@Model.ProductId" />
+
+        <div class="form-group">
+            <label for="productName">Product Name:</label>
+            <input type="text" id="productName" name="Name" class="form-control" list="storageProducts" required />
+
+            <!-- Datalist for suggestions -->
+            <datalist id="storageProducts">
+                @foreach (var product in ViewBag.StorageProducts)
+
+                {
+                    <option value="@product"></option>
+                }
+            </datalist>
+        </div>
+
+        <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="Quantity" class="form-control" min="0.1" step="0.01" required />
+        </div>
+
+        <div class="form-group">
+            <label for="productPrice">Product Price:</label>
+            <input type="number" id="productPrice" name="ProductPrice" class="form-control" min="0.01" step="0.01" required />
+        </div>
+
+        <input type="hidden" name="TotalPrice" value="@Model.TotalPrice" />
+
+        <button type="submit" class="submit-button">Add Purchase</button>
+    </form>
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .submit-button {
+        padding: 10px 15px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .content {
+        margin-left: 0px !important;
+    }
+
+    h1 {
+        margin-bottom: 40px;
+    }
+</style>
+
+<script>
+    // When the product name is selected, set the corresponding ProductId in the hidden input field
+    document.getElementById("productName").addEventListener("input", function() {
+        var productName = this.value;
+        var productId = null;
+
+        // Find the corresponding ProductId based on the selected product name
+        var storageProducts = @Html.Raw(Json.Serialize(ViewBag.StorageProducts));
+        for (var i = 0; i < storageProducts.length; i++) {
+            if (storageProducts[i] === productName) {
+                productId = i; // This assumes you have a way to map to ProductId, change logic if needed
+                break;
+            }
+        }
+
+        document.getElementById("productId").value = productId;
+    });
+</script>

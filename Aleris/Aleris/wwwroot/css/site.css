@@ -20,3 +20,17 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.content {
+    margin-left: 300px; /* Ensures it's not under the sidebar */
+    padding: 20px;
+    height: 100%; /* Makes sure the page takes full height */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers horizontally */
+    text-align: center; /* Centers text content */
+}
+
+h1 {
+    margin-bottom: 40px;
+}

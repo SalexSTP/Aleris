@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aleris.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250212163007_InitialCreate")]
+    [Migration("20250222144107_Initial-Create")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -125,6 +125,9 @@ namespace Aleris.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");

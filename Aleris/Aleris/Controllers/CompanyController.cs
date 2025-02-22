@@ -157,7 +157,10 @@ namespace Aleris.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var company = await _context.Companies.FindAsync(id);
+            var company = _context.Companies
+                .Include(c => c.Purchases)  // Ensure Purchases are included
+                .FirstOrDefault(c => c.Id == id);
+
             if (company == null)
             {
                 return NotFound();
