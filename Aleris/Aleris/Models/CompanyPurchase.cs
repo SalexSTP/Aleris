@@ -37,6 +37,9 @@ namespace Aleris.Models
         [DataType(DataType.DateTime)]
         public DateTime Date { get; private set; } = DateTime.Now;
 
+        [Required]
+        public string UnitType { get; set; } = "Kg.";
+
         public void CalculateTotalPrice()
         {
             _totalPrice = ProductPrice * Quantity;

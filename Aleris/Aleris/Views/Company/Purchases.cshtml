@@ -9,12 +9,35 @@
 
     <div class="purchase-header">
         <div class="search-container">
-            <input type="text" class="search-bar" placeholder="Search purchases...">
-            <button class="filter-button" id="filter-btn">Filters</button>
+            <button class="filter-button" id="filter-btn">Search</button>
         </div>
         <a href="@Url.Action("AddPurchase", "Purchases", new { companyId = Model.Id })" class="add-purchase-button">
             + Add Purchase
         </a>
+    </div>
+
+    <!-- Filter Form (Hidden Initially) -->
+    <div id="filter-form" class="filter-form hidden">
+        <label for="filter-type">Search by:</label>
+        <select id="filter-type" class="search-bar">
+            <option value="name" selected>Product Name</option>
+            <option value="date">Date Range</option>
+        </select>
+
+        <div id="product-name-filter">
+            <label for="product-name">Product Name:</label>
+            <input type="text" id="product-name" class="search-bar">
+        </div>
+
+        <div id="date-filter" class="hidden">
+            <label for="start-date">From:</label>
+            <input type="date" id="start-date" class="search-bar">
+
+            <label for="end-date">To:</label>
+            <input type="date" id="end-date" class="search-bar">
+        </div>
+
+        <button id="apply-filter" class="filter-button">Apply</button>
     </div>
 
     <table class="purchase-table">
@@ -23,17 +46,19 @@
                 <th>Date</th>
                 <th>Product Name</th>
                 <th>Quantity</th>
+                <th>Unit Type</th>
                 <th>Product Price</th>
                 <th>Total Price</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="purchase-table-body">
             @foreach (var purchase in Model.Purchases)
             {
                 <tr>
                     <td>@purchase.Date</td>
                     <td>@purchase.Name</td>
                     <td>@purchase.Quantity</td>
+                    <td>@purchase.UnitType</td>
                     <td>@purchase.ProductPrice.ToString("C")</td>
                     <td>@purchase.TotalPrice.ToString("C")</td>
                 </tr>
@@ -42,6 +67,78 @@
     </table>
 </div>
 
+<!-- JavaScript for Filtering Logic -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterBtn = document.getElementById("filter-btn");
+        const filterForm = document.getElementById("filter-form");
+        const filterType = document.getElementById("filter-type");
+        const productNameFilter = document.getElementById("product-name-filter");
+        const dateFilter = document.getElementById("date-filter");
+        const applyFilterBtn = document.getElementById("apply-filter");
+
+        // Show/hide filter form
+        filterBtn.addEventListener("click", function () {
+            filterForm.classList.toggle("hidden");
+        });
+
+        // Change search bar text and toggle filter inputs
+        filterType.addEventListener("change", function () {
+            if (filterType.value === "name") {
+                productNameFilter.classList.remove("hidden");
+                dateFilter.classList.add("hidden");
+            } else {
+                productNameFilter.classList.add("hidden");
+                dateFilter.classList.remove("hidden");
+            }
+        });
+
+        // Apply filter logic
+        applyFilterBtn.addEventListener("click", function () {
+            const filterTypeValue = filterType.value;
+            const rows = document.querySelectorAll("#purchase-table-body tr");
+
+            let searchQuery = "";
+            let startDate = "";
+            let endDate = "";
+
+            // Get filter values based on filter type
+            if (filterTypeValue === "name") {
+                searchQuery = document.getElementById("product-name").value.toLowerCase(); // For product name search
+            } else {
+                startDate = document.getElementById("start-date").value;
+                endDate = document.getElementById("end-date").value;
+            }
+
+            rows.forEach(row => {
+                const productName = row.cells[1].innerText.toLowerCase();
+                const purchaseDate = row.cells[0].innerText.split(' ')[0]; // Example: "2/23/2025 5:31:09 PM"
+
+                let matches = false;
+
+                if (filterTypeValue === "name") {
+                    matches = productName.includes(searchQuery); // Product name filter
+                } else if (filterTypeValue === "date") {
+                    if (startDate && endDate) {
+                        // Convert start and end dates to Date objects, but only compare the date part
+                        let start = new Date(startDate);
+                        let formattedStart = (start.getMonth() + 1) + '/' + start.getDate() + '/' + start.getFullYear();
+                        let end = new Date(endDate);
+                        let formattedEnd = (end.getMonth() + 1) + '/' + end.getDate() + '/' + end.getFullYear();
+
+                        // Compare if the purchase date is within the range
+                        matches = purchaseDate >= formattedStart && purchaseDate <= formattedEnd;
+                    }
+                }
+
+                // Show or hide the row based on filter match
+                row.style.display = matches ? "" : "none";
+            });
+        });
+    });
+</script>
+
+<!-- CSS for Styling -->
 <style>
     .purchase-header {
         display: flex;
@@ -58,9 +155,10 @@
 
     .search-bar {
         padding: 8px;
-        width: 250px;
+        width: 350px;
         border: 1px solid #ccc;
         border-radius: 5px;
+        font-size: 16px;
     }
 
     .filter-button {
@@ -80,19 +178,33 @@
         border-radius: 5px;
     }
 
+    .filter-form {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
     .purchase-table {
         width: 100%;
         border-collapse: collapse;
     }
 
-    .purchase-table th, .purchase-table td {
-        border-bottom: 1px solid #ccc;
-        padding: 10px;
-        text-align: left;
-    }
+        .purchase-table th, .purchase-table td {
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
 
-    .purchase-table th {
-        background-color: #f8f9fa;
-        font-weight: bold;
-    }
+        .purchase-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
 </style>

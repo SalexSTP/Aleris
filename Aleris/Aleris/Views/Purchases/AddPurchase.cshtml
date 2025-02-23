@@ -35,8 +35,13 @@
 
         <div class="form-group">
             <label for="quantity">Quantity:</label>
-            <input type="number" id="quantity" name="Quantity" class="form-control" min="0.1" step="0.01" required />
+            <input type="number" id="quantity" name="Quantity" class="form-control" min="0.01" step="0.01" required />
         </div>
+
+        <select asp-for="UnitType" class="form-control">
+            <option value="Kg.">Kg.</option>
+            <option value="Num.">Num.</option>
+        </select>
 
         <div class="form-group">
             <label for="productPrice">Product Price:</label>

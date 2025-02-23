@@ -30,6 +30,9 @@ namespace Aleris.Models
             private set => _totalPrice = value;
         }
 
+        [Required]
+        public string UnitType { get; set; } = "Kg.";
+
         public void UpdateStorageOnPurchase(decimal purchaseQuantity, decimal purchaseTotalPrice)
         {
             Quantity += purchaseQuantity;

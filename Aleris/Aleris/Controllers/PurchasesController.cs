@@ -78,6 +78,12 @@ namespace Aleris.Controllers
                 return View(purchase);  // Return view with error
             }
 
+            // Edit Quantity by the Unit Type
+            if (purchase.UnitType == "Num.")
+            {
+                purchase.Quantity = (int)Math.Ceiling(purchase.Quantity);
+            }
+
             // Check if a product with the same name already exists in this company's storage
             var existingProduct = await _context.CompanyStorages
                 .FirstOrDefaultAsync(st => st.ProductName == purchase.Name && st.CompanyId == companyId);
@@ -96,7 +102,8 @@ namespace Aleris.Controllers
                     CompanyId = companyId,  // Ensure CompanyId is set
                     ProductName = purchase.Name,
                     Quantity = purchase.Quantity,
-                    ProductPrice = purchase.ProductPrice
+                    ProductPrice = purchase.ProductPrice,
+                    UnitType = purchase.UnitType
                 };
 
                 storage.CalculateTotalPrice();
