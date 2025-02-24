@@ -6,4 +6,206 @@
 
 <div class="content">
     <h1>Sales for @Model.Name:</h1>
+
+    <div class="sale-header">
+        <div class="search-container">
+            <button class="filter-button" id="filter-btn">Search</button>
+        </div>
+        <a href="@Url.Action("AddSale", "Sales", new { companyId = Model.Id })" class="add-sale-button">
+            + Add Sale
+        </a>
+    </div>
+
+    <!-- Filter Form (Hidden Initially) -->
+    <div id="filter-form" class="filter-form hidden">
+        <label for="filter-type">Search by:</label>
+        <select id="filter-type" class="search-bar">
+            <option value="name" selected>Product Name</option>
+            <option value="date">Date Range</option>
+        </select>
+
+        <div id="product-name-filter">
+            <label for="product-name">Product Name:</label>
+            <input type="text" id="product-name" class="search-bar">
+        </div>
+
+        <div id="date-filter" class="hidden">
+            <label for="start-date">From:</label>
+            <input type="date" id="start-date" class="search-bar">
+
+            <label for="end-date">To:</label>
+            <input type="date" id="end-date" class="search-bar">
+        </div>
+
+        <button id="apply-filter" class="filter-button">Apply</button>
+    </div>
+
+    <table class="sale-table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Unit Type</th>
+                <th>Product Price</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody id="sale-table-body">
+            @foreach (var sale in Model.Sales)
+            {
+                <tr>
+                    <td>@sale.Date</td>
+                    <td>@sale.Name</td>
+                    <td>@sale.Quantity</td>
+                    <td>@sale.UnitType</td>
+                    <td>@sale.ProductPrice.ToString("C")</td>
+                    <td>@sale.TotalPrice.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
+
+<!-- JavaScript for Filtering Logic -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterBtn = document.getElementById("filter-btn");
+        const filterForm = document.getElementById("filter-form");
+        const filterType = document.getElementById("filter-type");
+        const productNameFilter = document.getElementById("product-name-filter");
+        const dateFilter = document.getElementById("date-filter");
+        const applyFilterBtn = document.getElementById("apply-filter");
+
+        // Show/hide filter form
+        filterBtn.addEventListener("click", function () {
+            filterForm.classList.toggle("hidden");
+        });
+
+        // Change search bar text and toggle filter inputs
+        filterType.addEventListener("change", function () {
+            if (filterType.value === "name") {
+                productNameFilter.classList.remove("hidden");
+                dateFilter.classList.add("hidden");
+            } else {
+                productNameFilter.classList.add("hidden");
+                dateFilter.classList.remove("hidden");
+            }
+        });
+
+        // Apply filter logic
+        applyFilterBtn.addEventListener("click", function () {
+            const filterTypeValue = filterType.value;
+            const rows = document.querySelectorAll("#sale-table-body tr");
+
+            let searchQuery = "";
+            let startDate = "";
+            let endDate = "";
+
+            // Get filter values based on filter type
+            if (filterTypeValue === "name") {
+                searchQuery = document.getElementById("product-name").value.toLowerCase(); // For product name search
+            } else {
+                startDate = document.getElementById("start-date").value;
+                endDate = document.getElementById("end-date").value;
+            }
+
+            rows.forEach(row => {
+                const productName = row.cells[1].innerText.toLowerCase();
+                const saleDate = row.cells[0].innerText.split(' ')[0]; // Example: "2/23/2025 5:31:09 PM"
+
+                let matches = false;
+
+                if (filterTypeValue === "name") {
+                    matches = productName.includes(searchQuery); // Product name filter
+                } else if (filterTypeValue === "date") {
+                    if (startDate && endDate) {
+                        // Convert start and end dates to Date objects, but only compare the date part
+                        let start = new Date(startDate);
+                        let formattedStart = (start.getMonth() + 1) + '/' + start.getDate() + '/' + start.getFullYear();
+
+                        let end = new Date(endDate);
+                        let formattedEnd = (end.getMonth() + 1) + '/' + end.getDate() + 1 + '/' + end.getFullYear();
+
+                        // Compare if the sale date is within the range
+                        matches = saleDate >= formattedStart && saleDate <= formattedEnd;
+                    }
+                }
+
+                // Show or hide the row based on filter match
+                row.style.display = matches ? "" : "none";
+            });
+        });
+    });
+</script>
+
+<!-- CSS for Styling -->
+<style>
+    .sale-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .search-container {
+        display: flex;
+        gap: 10px;
+    }
+
+    .search-bar {
+        padding: 8px;
+        width: 350px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+
+    .filter-button {
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .add-sale-button {
+        text-decoration: none;
+        padding: 8px 15px;
+        background-color: #28a745;
+        color: white;
+        border-radius: 5px;
+    }
+
+    .filter-form {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .sale-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .sale-table th, .sale-table td {
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .sale-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+</style>

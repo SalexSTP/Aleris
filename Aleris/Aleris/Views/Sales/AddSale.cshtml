@@ -1,18 +1,18 @@
-﻿@model Aleris.Models.CompanyPurchase
+﻿@model Aleris.Models.CompanySale
 
 @{
-    ViewData["Title"] = "Add Purchase";
+    ViewData["Title"] = "Add Sale";
 
     var storageProducts = ViewBag.StorageProducts as List<string> ?? new List<string>();
 }
 
 <div class="content">
-    <h1>Add Purchase</h1>
+    <h1>Add Sale</h1>
 
     <!-- Display validation errors -->
     <div asp-validation-summary="All" class="text-danger"></div>
 
-    <form method="post" action="@Url.Action("AddPurchase", "Purchases")">
+    <form method="post" action="@Url.Action("AddSale", "Sales")">
         <!-- Hidden fields for CompanyId and ProductId -->
         <input type="hidden" name="CompanyId" value="@Model.CompanyId" />
         <input type="hidden" name="ProductId" value="@Model.ProductId" />
@@ -47,7 +47,7 @@
 
         <input type="hidden" name="TotalPrice" value="@Model.TotalPrice" />
 
-        <button type="submit" class="submit-button">Add Purchase</button>
+        <button type="submit" class="submit-button">Add Sale</button>
     </form>
 </div>
 
