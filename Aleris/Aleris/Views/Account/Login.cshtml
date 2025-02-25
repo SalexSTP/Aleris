@@ -4,7 +4,6 @@
     ViewData["Title"] = "Login";
 }
 
-
 <h2>@ViewData["Title"]</h2>
 
 <form method="post" asp-controller="Account" asp-action="Login">
@@ -25,4 +24,8 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Login</button>
+
+    <div class="mt-3">
+        <p>Don't have an account yet? <a href="@Url.Action("Register", "Account")">Register here</a></p>
+    </div>
 </form>

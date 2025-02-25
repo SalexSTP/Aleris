@@ -2,6 +2,54 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-</div>
+@if (Context.Session.GetString("UserEmail") != null)
+{
+    
+}
+else
+{
+    <div class="text-center">
+        <h1 class="display-2 fw-bold">Welcome to Aleris</h1>
+        <p class="lead">Your journey starts here. Join us today and explore endless possibilities!</p>
+        <a href="@Url.Action("Login", "Account")" class="btn btn-lg btn-light shadow mt-3">Get Started</a>
+    </div>
+}
+
+<style>
+    body {
+        background-color: #e3f2fd; /* Light blue background */
+        color: #0d47a1; /* Deep blue text for readability */
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .text-center {
+        padding: 100px 20px;
+    }
+
+    h1 {
+        color: #0d47a1; /* Dark blue for contrast */
+    }
+
+    p.lead {
+        color: #1565c0; /* Medium blue */
+        font-size: 1.2rem;
+    }
+
+    .btn-light {
+        background-color: #2196f3; /* Bright blue */
+        color: white;
+        border: none;
+        transition: background 0.3s ease-in-out, transform 0.2s ease;
+    }
+
+    .btn-light:hover {
+        background-color: #1976d2; /* Slightly darker blue */
+        transform: scale(1.05);
+    }
+
+    .btn-light:active {
+        background-color: #1565c0;
+        transform: scale(0.95);
+    }
+
+</style>
