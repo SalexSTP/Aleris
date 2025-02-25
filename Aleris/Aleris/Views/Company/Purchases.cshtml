@@ -123,9 +123,8 @@
                         // Convert start and end dates to Date objects, but only compare the date part
                         let start = new Date(startDate);
                         let formattedStart = (start.getMonth() + 1) + '/' + start.getDate() + '/' + start.getFullYear();
-
                         let end = new Date(endDate);
-                        let formattedEnd = (end.getMonth() + 1) + '/' + end.getDate() + 1 + '/' + end.getFullYear();
+                        let formattedEnd = (end.getMonth() + 1) + '/' + end.getDate() + '/' + end.getFullYear();
 
                         // Compare if the purchase date is within the range
                         matches = purchaseDate >= formattedStart && purchaseDate <= formattedEnd;

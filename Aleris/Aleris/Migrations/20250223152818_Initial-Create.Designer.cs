@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aleris.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250224120752_Initial-Create")]
+    [Migration("20250223152818_Initial-Create")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -161,7 +161,7 @@ namespace Aleris.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("ProductPrice")
@@ -169,13 +169,6 @@ namespace Aleris.Migrations
 
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("UnitType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -340,13 +333,15 @@ namespace Aleris.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aleris.Models.CompanyStorage", "Product")
+                    b.HasOne("Aleris.Models.CompanyStorage", "Storage")
                         .WithMany()
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Company");
 
-                    b.Navigation("Product");
+                    b.Navigation("Storage");
                 });
 
             modelBuilder.Entity("Aleris.Models.CompanySettings", b =>

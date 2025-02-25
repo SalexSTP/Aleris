@@ -56,6 +56,13 @@ namespace Aleris.Data
                 .WithOne(s => s.Company)
                 .HasForeignKey(s => s.CompanyId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Define relationship between Sales & Storage
+            modelBuilder.Entity<CompanySale>()
+                .HasOne(s => s.Storage) // Now exists
+                .WithMany()
+                .HasForeignKey(s => s.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

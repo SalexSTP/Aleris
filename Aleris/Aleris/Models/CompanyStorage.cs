@@ -40,14 +40,13 @@ namespace Aleris.Models
             CalculateAveragePrice();
         }
 
-        public void UpdateStorageOnSale(decimal saleQuantity, decimal saleTotalPrice)
+        public void UpdateStorageOnSale(decimal saleQuantity)
         {
             if (saleQuantity > Quantity)
                 throw new InvalidOperationException("Not enough stock available.");
 
             Quantity -= saleQuantity;
-            _totalPrice -= saleTotalPrice;
-            CalculateAveragePrice();
+            CalculateTotalPrice();
         }
 
         public void CalculateTotalPrice()

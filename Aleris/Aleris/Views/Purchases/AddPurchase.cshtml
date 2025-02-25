@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = "Add Purchase";
 
+
+
     var storageProducts = ViewBag.StorageProducts as List<string> ?? new List<string>();
 }
 
@@ -24,6 +26,7 @@
             <!-- Datalist for suggestions -->
             <datalist id="storageProducts">
                 @foreach (var product in ViewBag.StorageProducts)
+
                 {
                     <option value="@product"></option>
                 }
