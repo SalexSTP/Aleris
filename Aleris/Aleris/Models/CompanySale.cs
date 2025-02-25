@@ -11,12 +11,12 @@ namespace Aleris.Models
         [Required]
         [ForeignKey("Company")]
         public int CompanyId { get; set; }
-        public Company Company { get; set; }
+        public Company? Company { get; set; }
 
         [Required]
         [ForeignKey("CompanyStorage")]
-        public int ProductId { get; set; }  // Required because sales must link to existing storage
-        public CompanyStorage Storage { get; set; }
+        public int ProductId { get; set; }
+        public CompanyStorage? Storage { get; set; }
 
         [Required]
         public string Name { get; set; }

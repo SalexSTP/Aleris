@@ -100,6 +100,7 @@ namespace Aleris.Controllers
                 var storage = new CompanyStorage
                 {
                     CompanyId = companyId,  // Ensure CompanyId is set
+                    Company = _context.Companies.First(c => c.Id.Equals(companyId)),
                     ProductName = purchase.Name,
                     Quantity = purchase.Quantity,
                     ProductPrice = purchase.ProductPrice,
@@ -108,11 +109,22 @@ namespace Aleris.Controllers
 
                 storage.CalculateTotalPrice();
                 _context.CompanyStorages.Add(storage);
+                await _context.SaveChangesAsync();
             }
 
             // Handle purchase addition
             purchase.CompanyId = companyId;
-            purchase.ProductId = existingProduct?.Id ?? _context.CompanyStorages.OrderByDescending(p => p.Id).FirstOrDefault()?.Id;
+            purchase.Company = _context.Companies.First(c => c.Id.Equals(companyId));
+
+            if (existingProduct == null)
+            {
+                purchase.ProductId = _context.CompanyStorages.OrderByDescending(p => p.Id).FirstOrDefault().Id;
+            }
+            else
+            {
+                purchase.ProductId = existingProduct.Id;
+            }
+
             purchase.CalculateTotalPrice();
 
             _context.CompanyPurchases.Add(purchase);

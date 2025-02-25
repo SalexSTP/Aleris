@@ -48,6 +48,32 @@ namespace Aleris.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CompanyPurchases",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UnitType = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyPurchases", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CompanyPurchases_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CompanySettings",
                 columns: table => new
                 {
@@ -126,37 +152,6 @@ namespace Aleris.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CompanyPurchases",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CompanyId = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProductPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UnitType = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CompanyPurchases", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CompanyPurchases_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CompanyPurchases_CompanyStorages_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "CompanyStorages",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CompanySales",
                 columns: table => new
                 {
@@ -200,11 +195,6 @@ namespace Aleris.Migrations
                 name: "IX_CompanyPurchases_CompanyId",
                 table: "CompanyPurchases",
                 column: "CompanyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompanyPurchases_ProductId",
-                table: "CompanyPurchases",
-                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CompanySales_CompanyId",

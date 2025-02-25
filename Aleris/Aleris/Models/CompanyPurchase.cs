@@ -13,9 +13,8 @@ namespace Aleris.Models
         public int CompanyId { get; set; }
         public Company? Company { get; set; }
 
-        [ForeignKey("Product")]
-        public int? ProductId { get; set; } // Nullable to allow new product entries
-        public CompanyStorage? Product { get; set; }
+        [Required]
+        public int ProductId { get; set; }
 
         [Required]
         public string Name { get; set; }

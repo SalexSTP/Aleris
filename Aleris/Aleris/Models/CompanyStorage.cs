@@ -11,7 +11,7 @@ namespace Aleris.Models
         [Required]
         [ForeignKey("Company")]
         public int CompanyId { get; set; }
-        public Company Company { get; set; }
+        public Company? Company { get; set; }
 
         [Required]
         public string ProductName { get; set; }

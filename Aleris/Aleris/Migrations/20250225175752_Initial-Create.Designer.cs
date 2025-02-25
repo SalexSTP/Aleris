@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aleris.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250223152818_Initial-Create")]
+    [Migration("20250225175752_Initial-Create")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -118,7 +118,7 @@ namespace Aleris.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("ProductPrice")
@@ -137,8 +137,6 @@ namespace Aleris.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("ProductId");
 
                     b.ToTable("CompanyPurchases");
                 });
@@ -316,13 +314,7 @@ namespace Aleris.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aleris.Models.CompanyStorage", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId");
-
                     b.Navigation("Company");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Aleris.Models.CompanySale", b =>
