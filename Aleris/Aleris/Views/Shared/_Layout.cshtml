@@ -26,7 +26,7 @@
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-dark" href="#" id="companiesDropdown" role="button" data-bs-toggle="dropdown">
-                                    Companies
+                                    Компании
                                 </a>
                                 <ul class="dropdown-menu">
                                     @if (ViewBag.Companies != null && ViewBag.Companies.Count > 0)
@@ -40,7 +40,7 @@
                                     }
                                     else
                                     {
-                                        <li><span class="dropdown-item text-muted">No companies</span></li>
+                                        <li><span class="dropdown-item text-muted">Няма компании</span></li>
                                     }
                                 </ul>
                             </li>
@@ -48,7 +48,7 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Начало</a>
                             </li>
                         }
                     </ul>
@@ -57,7 +57,7 @@
                         @if (Context.Session.GetString("UserEmail") != null)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" href="@Url.Action("CreateCompany", "Company")">Create Company</a>
+                                <a class="nav-link text-dark" href="@Url.Action("CreateCompany", "Company")">Създаване на компания</a>
                             </li>
 
                             <li class="nav-item dropdown">
@@ -72,10 +72,10 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Влизане</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Регистриране</a>
                             </li>
                         }
                     </ul>
@@ -95,22 +95,22 @@
         <div class="sidebar">
             <h4 class="text-center" style="margin-bottom:30px;">@Model.Name</h4>
             <a href="@Url.Action("Statistics", "Company", new { id = companyId })" class="@(currentAction == "Statistics" ? "active" : "")">
-                <i class="bi bi-bar-chart"></i> Statistics
+                <i class="bi bi-bar-chart"></i> Статистики
             </a>
             <a href="@Url.Action("Purchases", "Company", new { id = companyId })" class="@(currentAction == "Purchases" ? "active" : "")">
-                <i class="bi bi-cart"></i> Purchases
+                <i class="bi bi-cart"></i> Поръчки
             </a>
             <a href="@Url.Action("Storage", "Company", new { id = companyId })" class="@(currentAction == "Storage" ? "active" : "")">
-                <i class="bi bi-box"></i> Storage
+                <i class="bi bi-box"></i> Склад
             </a>
             <a href="@Url.Action("Sales", "Company", new { id = companyId })" class="@(currentAction == "Sales" ? "active" : "")">
-                <i class="bi bi-cash-stack"></i> Sales
+                <i class="bi bi-cash-stack"></i> Продажби
             </a>
             <a href="@Url.Action("Members", "Company", new { id = companyId })" class="@(currentAction == "Members" ? "active" : "")">
-                <i class="bi bi-people"></i> Members
+                <i class="bi bi-people"></i> Членове
             </a>
             <a href="@Url.Action("Settings", "Company", new { id = companyId })" class="@(currentAction == "Settings" ? "active" : "")">
-                <i class="bi bi-gear"></i> Settings
+                <i class="bi bi-gear"></i> Настройки
             </a>
         </div>
     }
@@ -123,7 +123,7 @@
 
     <!-- Footer (Always at the Bottom) -->
     <footer class="footer bg-dark text-white text-center py-3 mt-auto">
-        <p class="mb-0">&copy; 2025 Aleris. All rights reserved.</p>
+        <p class="mb-0">&copy; 2025 Aleris. Всички права запазени</p>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -5,27 +5,27 @@
 }
 
 <div class="content">
-    <h1>Purchases for @Model.Name:</h1>
+    <h1>Поръчки за @Model.Name:</h1>
 
     <div class="purchase-header">
         <div class="search-container">
-            <button class="filter-button" id="filter-btn">Search</button>
+            <button class="filter-button" id="filter-btn">Търсене</button>
         </div>
         <a href="@Url.Action("AddPurchase", "Purchases", new { companyId = Model.Id })" class="add-purchase-button">
-            + Add Purchase
+            + Добавяне на поръчка
         </a>
     </div>
 
     <!-- Filter Form (Hidden Initially) -->
     <div id="filter-form" class="filter-form hidden">
-        <label for="filter-type">Search by:</label>
+        <label for="filter-type">Потърси по:</label>
         <select id="filter-type" class="search-bar">
-            <option value="name" selected>Product Name</option>
-            <option value="date">Date Range</option>
+            <option value="name" selected>Име на продукт</option>
+            <option value="date">Дата</option>
         </select>
 
         <div id="product-name-filter">
-            <label for="product-name">Product Name:</label>
+            <label for="product-name">Име на продукт:</label>
             <input type="text" id="product-name" class="search-bar">
         </div>
 
@@ -37,18 +37,18 @@
             <input type="date" id="end-date" class="search-bar">
         </div>
 
-        <button id="apply-filter" class="filter-button">Apply</button>
+        <button id="apply-filter" class="filter-button">Приложи</button>
     </div>
 
     <table class="purchase-table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Unit Type</th>
-                <th>Product Price</th>
-                <th>Total Price</th>
+                <th>Дата</th>
+                <th>Име на продукт</th>
+                <th>Количество</th>
+                <th>Тип на количество</th>
+                <th>Цена на продукт</th>
+                <th>Обща сума</th>
             </tr>
         </thead>
         <tbody id="purchase-table-body">

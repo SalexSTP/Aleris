@@ -1,63 +1,63 @@
 ﻿@model Aleris.Models.Company
 
 @{
-    ViewData["Title"] = "Create Company";
+    ViewData["Title"] = "Създаване на компания";
 }
 
-<h2>Create Company</h2>
+<h2>Създаване на компания</h2>
 
 <form asp-action="CreateCompany" method="post">
     @Html.AntiForgeryToken()
     <div class="mb-3">
-        <label asp-for="Name" class="form-label">Company Name*</label>
+        <label asp-for="Name" class="form-label">Име на компания*</label>
         <input asp-for="Name" class="form-control" required>
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Bulstat" class="form-label">BULSTAT*</label>
+        <label asp-for="Bulstat" class="form-label">Булстат*</label>
         <input asp-for="Bulstat" class="form-control" required>
         <span asp-validation-for="Bulstat" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="VatNumber" class="form-label">VAT Number (Optional)</label>
+        <label asp-for="VatNumber" class="form-label">Число на ДДС (незадължително)</label>
         <input asp-for="VatNumber" class="form-control">
         <span asp-validation-for="VatNumber" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="City" class="form-label">City*</label>
+        <label asp-for="City" class="form-label">Град*</label>
         <input asp-for="City" class="form-control" required>
         <span asp-validation-for="City" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Address" class="form-label">Address*</label>
+        <label asp-for="Address" class="form-label">Адрес*</label>
         <input asp-for="Address" class="form-control" required>
         <span asp-validation-for="Address" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Manager" class="form-label">Managing Official</label>
+        <label asp-for="Manager" class="form-label">Име на мениджър</label>
         <input asp-for="Manager" class="form-control">
         <span asp-validation-for="Manager" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="PhoneNumber" class="form-label">Phone Number*</label>
+        <label asp-for="PhoneNumber" class="form-label">Телефонен номер*</label>
         <input asp-for="PhoneNumber" class="form-control" required>
         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label asp-for="Email" class="form-label">Email*</label>
+        <label asp-for="Email" class="form-label">Имейл*</label>
         <input asp-for="Email" class="form-control" required>
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
 
     <input type="hidden" name="companyId" value="@Model.Id" />
-    <button type="submit" class="btn btn-primary">Create</button>
+    <button type="submit" class="btn btn-primary">Създаване</button>
 </form>
 
 

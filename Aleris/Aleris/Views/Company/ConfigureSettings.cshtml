@@ -2,7 +2,7 @@
 @model Aleris.Models.CompanySettings
 
 @{
-    ViewData["Title"] = "Configure Settings for " + Model.Company.Name;
+    ViewData["Title"] = "Промени настройки за: " + Model.Company.Name;
 }
 
 <h2>Configure Settings for @Model.Company.Name</h2>
@@ -12,7 +12,7 @@
     <input type="hidden" asp-for="CompanyId" /> <!-- Ensures CompanyId is passed -->
     <!-- VAT Registered -->
     <div class="mb-3">
-        <label class="form-label">Is VAT Registered?</label>
+        <label class="form-label">Регистриран по ДДС?</label>
         @Html.DropDownListFor(model => model.IsVatRegistered,
                  new SelectList(Enum.GetValues(typeof(Aleris.Models.CompanySettings.VatRegistered)).Cast<Aleris.Models.CompanySettings.VatRegistered>().Select(e => new { Value = e, Text = e.ToString() }),
                  "Value", "Text", Model.IsVatRegistered)
@@ -22,7 +22,7 @@
 
     <!-- VAT Included in Prices -->
     <div class="mb-3">
-        <label class="form-label">Is VAT Included in Prices?</label>
+        <label class="form-label">ДДС включен ли е в цените?</label>
         @Html.DropDownListFor(model => model.IsVatIncludedInPrices,
                  new SelectList(Enum.GetValues(typeof(Aleris.Models.CompanySettings.IsVatIncluded)).Cast<Aleris.Models.CompanySettings.IsVatIncluded>().Select(e => new { Value = e, Text = e.ToString() }),
                  "Value", "Text", Model.IsVatIncludedInPrices)
@@ -54,7 +54,7 @@
     <!-- Quantity Precision -->
     
     <div class="mb-3">
-        <label asp-for="QuantityPrecision" class="form-label">Quantity Precision</label>
+        <label asp-for="QuantityPrecision" class="form-label">Точност на количество</label>
         @Html.DropDownListFor(
             model => model.QuantityPrecision,
             new SelectList(
@@ -73,16 +73,16 @@
         <span asp-validation-for="QuantityPrecision" class="text-danger"></span>
     </div>
 
-    <!-- Allow Negative Quantities -->
+   @*  <!-- Allow Negative Quantities -->
     <div class="mb-3">
-        <label class="form-label">Allow Negative Quantities?</label>
+        <label class="form-label">Позволи негативни количества?</label>
         @Html.DropDownListFor(model => model.AllowNegativeQuantities,
                  new SelectList(Enum.GetValues(typeof(Aleris.Models.CompanySettings.NegativeQuantities)).Cast<Aleris.Models.CompanySettings.NegativeQuantities>().Select(e => new { Value = e, Text = e.ToString() }),
                  "Value", "Text", Model.AllowNegativeQuantities)
                  )
         <span asp-validation-for="AllowNegativeQuantities" class="text-danger"></span>
     </div>
-
+ *@
     <!-- Revision Method -->
     <div class="mb-3">
         <label class="form-label">Revision Method</label>
@@ -95,7 +95,7 @@
 
     <!-- Auto Production -->
     <div class="mb-3">
-        <label class="form-label">Auto Production</label>
+        <label class="form-label">Автоматична продукция</label>
         @Html.DropDownListFor(model => model.AutoProduction,
                  new SelectList(Enum.GetValues(typeof(Aleris.Models.CompanySettings.IsAutoProduction)).Cast<Aleris.Models.CompanySettings.IsAutoProduction>().Select(e => new { Value = e, Text = e.ToString() }),
                  "Value", "Text", Model.AutoProduction)
@@ -105,7 +105,7 @@
 
     <!-- Work With Traders -->
     <div class="mb-3">
-        <label class="form-label">Work With Traders</label>
+        <label class="form-label">Работене с търговци</label>
         @Html.DropDownListFor(model => model.WorkWithTraders,
                  new SelectList(Enum.GetValues(typeof(Aleris.Models.CompanySettings.Traders)).Cast<Aleris.Models.CompanySettings.Traders>().Select(e => new { Value = e, Text = e.ToString() }),
                  "Value", "Text", Model.WorkWithTraders)
@@ -113,7 +113,7 @@
         <span asp-validation-for="WorkWithTraders" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="submit" class="btn btn-primary">Запазване</button>
 </form>
 
 @section Scripts {

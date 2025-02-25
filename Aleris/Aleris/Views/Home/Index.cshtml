@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Начална страница";
 }
 
 @if (Context.Session.GetString("UserEmail") != null)
@@ -9,9 +9,9 @@
 else
 {
     <div class="text-center">
-        <h1 class="display-2 fw-bold">Welcome to Aleris</h1>
-        <p class="lead">Your journey starts here. Join us today and explore endless possibilities!</p>
-        <a href="@Url.Action("Login", "Account")" class="btn btn-lg btn-light shadow mt-3">Get Started</a>
+        <h1 class="display-2 fw-bold">Заповядайте в Aleris</h1>
+        <p class="lead">Днес започва приключението ти! Създай си акаунт днес и се запознай със функциите на Aleris!</p>
+        <a href="@Url.Action("Login", "Account")" class="btn btn-lg btn-light shadow mt-3">Започни</a>
     </div>
 }
 

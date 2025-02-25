@@ -1,7 +1,7 @@
 ﻿@model User
 
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Регистриране";
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -12,28 +12,28 @@
     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
     <div class="mb-3">
-        <label for="Name" class="form-label">Name</label>
+        <label for="Name" class="form-label">Име</label>
         <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
         @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
     </div>
 
     <div class="mb-3">
-        <label for="Email" class="form-label">Email</label>
+        <label for="Email" class="form-label">Имейл</label>
         <input type="email" class="form-control" id="Email" name="Email" value="@Model.Email" required />
         @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
     </div>
 
     <div class="mb-3">
-        <label for="Password" class="form-label">Password</label>
+        <label for="Password" class="form-label">Парола</label>
         <input type="password" class="form-control" id="Password" name="Password" value="@Model.Password" required />
         @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
     </div>
 
     <div class="mb-3">
-        <label for="PhoneNumber" class="form-label">Phone Number</label>
+        <label for="PhoneNumber" class="form-label">Телефонен номер</label>
         <input type="text" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" required />
         @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
     </div>
 
-    <button type="submit" class="btn btn-primary">Register</button>
+    <button type="submit" class="btn btn-primary">Регистриране</button>
 </form>

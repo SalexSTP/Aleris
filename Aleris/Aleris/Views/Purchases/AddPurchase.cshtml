@@ -9,7 +9,7 @@
 }
 
 <div class="content">
-    <h1>Add Purchase</h1>
+    <h1>Добави Поръчка</h1>
 
     <!-- Display validation errors -->
     <div asp-validation-summary="All" class="text-danger"></div>
@@ -20,8 +20,8 @@
         <input type="hidden" name="ProductId" value="@Model.ProductId" />
 
         <div class="form-group">
-            <label for="productName">Product Name:</label>
-            <input type="text" id="productName" name="Name" class="form-control" list="storageProducts" required />
+            <label for="productName">Име на продукт:</label>
+            <input type="text" id="productName" name="Име" class="form-control" list="storageProducts" required />
 
             <!-- Datalist for suggestions -->
             <datalist id="storageProducts">
@@ -34,23 +34,23 @@
         </div>
 
         <div class="form-group">
-            <label for="quantity">Quantity:</label>
-            <input type="number" id="quantity" name="Quantity" class="form-control" min="0.01" step="0.01" required />
+            <label for="quantity">Количество:</label>
+            <input type="number" id="quantity" name="Количество" class="form-control" min="0.01" step="0.01" required />
         </div>
 
         <select asp-for="UnitType" class="form-control">
-            <option value="Kg.">Kg.</option>
-            <option value="Num.">Num.</option>
+            <option value="Kg.">Килограми.</option>
+            <option value="Num.">Число.</option>
         </select>
 
         <div class="form-group">
-            <label for="productPrice">Product Price:</label>
+            <label for="productPrice">Цена на продукт:</label>
             <input type="number" id="productPrice" name="ProductPrice" class="form-control" min="0.01" step="0.01" required />
         </div>
 
         <input type="hidden" name="TotalPrice" value="@Model.TotalPrice" />
 
-        <button type="submit" class="submit-button">Add Purchase</button>
+        <button type="submit" class="submit-button">Добави Поръчка</button>
     </form>
 </div>
 
