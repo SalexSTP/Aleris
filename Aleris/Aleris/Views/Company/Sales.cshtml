@@ -1,9 +1,139 @@
 ﻿@model Aleris.Models.Company
 
 @{
-    ViewData["Title"] = "Продажби";
+    ViewData["Title"] = Model.Name;
 }
 
 <div class="content">
     <h1>Продажби за @Model.Name:</h1>
+
+    <div class="purchase-header">
+        <div class="search-container">
+            <button class="filter-button" id="filter-btn">Търсене</button>
+        </div>
+        <a href="@Url.Action("AddSale", "Sales", new { companyId = Model.Id })" class="btn btn-success">
+            + Добавяне на продажба
+        </a>
+    </div>
+
+    <!-- Filter Form (Hidden Initially) -->
+    <div id="filter-form" class="filter-form hidden">
+        <label for="filter-type">Потърси по:</label>
+        <select id="filter-type" class="search-bar">
+            <option value="name" selected>Име на продукт</option>
+            <option value="date">Дата</option>
+        </select>
+
+        <div id="product-name-filter">
+            <label for="product-name">Име на продукт:</label>
+            <input type="text" id="product-name" class="search-bar">
+        </div>
+
+        <div id="date-filter" class="hidden">
+            <label for="start-date">From:</label>
+            <input type="date" id="start-date" class="search-bar">
+
+            <label for="end-date">To:</label>
+            <input type="date" id="end-date" class="search-bar">
+        </div>
+
+        <button id="apply-filter" class="filter-button">Приложи</button>
+    </div>
+
+    <table class="purchase-table">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Име на продукт</th>
+                <th>Количество</th>
+                <th>Тип на количество</th>
+                <th>Цена на продукт</th>
+                <th>Обща сума</th>
+            </tr>
+        </thead>
+        <tbody id="purchase-table-body">
+            @foreach (var sale in Model.Sales)
+            {
+                <tr>
+                    <td>@sale.Date</td>
+                    <td>@sale.Name</td>
+                    <td>@sale.Quantity</td>
+                    <td>@sale.UnitType</td>
+                    <td>@sale.ProductPrice.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</td>
+                    <td>@sale.TotalPrice.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
+
+<!-- JavaScript for Filtering Logic -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filterBtn = document.getElementById("filter-btn");
+        const filterForm = document.getElementById("filter-form");
+        const filterType = document.getElementById("filter-type");
+        const productNameFilter = document.getElementById("product-name-filter");
+        const dateFilter = document.getElementById("date-filter");
+        const applyFilterBtn = document.getElementById("apply-filter");
+
+        // Show/hide filter form
+        filterBtn.addEventListener("click", function () {
+            filterForm.classList.toggle("hidden");
+        });
+
+        // Change search bar text and toggle filter inputs
+        filterType.addEventListener("change", function () {
+            if (filterType.value === "name") {
+                productNameFilter.classList.remove("hidden");
+                dateFilter.classList.add("hidden");
+            } else {
+                productNameFilter.classList.add("hidden");
+                dateFilter.classList.remove("hidden");
+            }
+        });
+
+        // Apply filter logic
+        applyFilterBtn.addEventListener("click", function () {
+            const filterTypeValue = filterType.value;
+            const rows = document.querySelectorAll("#purchase-table-body tr");
+
+            let searchQuery = "";
+            let startDate = "";
+            let endDate = "";
+
+            // Get filter values based on filter type
+            if (filterTypeValue === "name") {
+                searchQuery = document.getElementById("product-name").value.toLowerCase(); // For product name search
+            } else {
+                startDate = document.getElementById("start-date").value;
+                endDate = document.getElementById("end-date").value;
+            }
+
+            rows.forEach(row => {
+                const productName = row.cells[1].innerText.toLowerCase();
+                const purchaseDate = row.cells[0].innerText.split(' ')[0]; // Example: "2/23/2025 5:31:09 PM"
+
+                let matches = false;
+
+                if (filterTypeValue === "name") {
+                    matches = productName.includes(searchQuery); // Product name filter
+                } else if (filterTypeValue === "date") {
+                    if (startDate && endDate) {
+                        // Convert start and end dates to Date objects, but only compare the date part
+                        let start = new Date(startDate);
+                        let formattedStart = (start.getMonth() + 1) + '/' + start.getDate() + '/' + start.getFullYear();
+                        let end = new Date(endDate);
+                        let formattedEnd = (end.getMonth() + 1) + '/' + end.getDate() + '/' + end.getFullYear();
+
+                        // Compare if the purchase date is within the range
+                        matches = purchaseDate >= formattedStart && purchaseDate <= formattedEnd;
+                    }
+                }
+
+                // Show or hide the row based on filter match
+                row.style.display = matches ? "" : "none";
+            });
+        });
+    });
+</script>

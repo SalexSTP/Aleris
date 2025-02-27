@@ -14,7 +14,6 @@ namespace Aleris.Models
         public Company? Company { get; set; }
 
         [Required]
-        [ForeignKey("CompanyStorage")]
         public int ProductId { get; set; }
         public CompanyStorage? Storage { get; set; }
 
@@ -27,10 +26,23 @@ namespace Aleris.Models
         [Required]
         public decimal ProductPrice { get; set; }
 
-        public decimal TotalPrice => ProductPrice * Quantity; // Computed dynamically
+        private decimal _totalPrice;
+        public decimal TotalPrice
+        {
+            get => _totalPrice;
+            private set => _totalPrice = value;
+        }
 
         [Required]
         [DataType(DataType.DateTime)]
         public DateTime Date { get; private set; } = DateTime.Now;
+
+        [Required]
+        public string UnitType { get; set; }
+
+        public void CalculateTotalPrice()
+        {
+            _totalPrice = ProductPrice * Quantity;
+        }
     }
 }

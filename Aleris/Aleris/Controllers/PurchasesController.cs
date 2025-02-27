@@ -2,32 +2,13 @@
 using Aleris.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client.Extensions.Msal;
 
 namespace Aleris.Controllers
 {
-    public class PurchasesController : Controller
+    public class PurchasesController : BaseController
     {
-        private readonly ApplicationDbContext _context;
-
-        public PurchasesController(ApplicationDbContext context)
+        public PurchasesController(ApplicationDbContext context) : base(context)
         {
-            _context = context;
-        }
-
-        // GET: Purchases
-        public IActionResult Index(int companyId)
-        {
-            var company = _context.Companies
-                .Include(c => c.Purchases) // Load purchases
-                .FirstOrDefault(c => c.Id == companyId);
-
-            if (company == null)
-            {
-                return NotFound();
-            }
-
-            return View(company.Purchases);
         }
 
         [HttpGet]

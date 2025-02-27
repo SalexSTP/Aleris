@@ -11,7 +11,7 @@
         <div class="search-container">
             <button class="filter-button" id="filter-btn">Търсене</button>
         </div>
-        <a href="@Url.Action("AddPurchase", "Purchases", new { companyId = Model.Id })" class="add-purchase-button">
+        <a href="@Url.Action("AddPurchase", "Purchases", new { companyId = Model.Id })" class="btn btn-success">
             + Добавяне на поръчка
         </a>
     </div>
@@ -59,8 +59,8 @@
                     <td>@purchase.Name</td>
                     <td>@purchase.Quantity</td>
                     <td>@purchase.UnitType</td>
-                    <td>@purchase.ProductPrice.ToString("C")</td>
-                    <td>@purchase.TotalPrice.ToString("C")</td>
+                    <td>@purchase.ProductPrice.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</td>
+                    <td>@purchase.TotalPrice.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</td>
                 </tr>
             }
         </tbody>
@@ -137,74 +137,3 @@
         });
     });
 </script>
-
-<!-- CSS for Styling -->
-<style>
-    .purchase-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        margin-bottom: 20px;
-    }
-
-    .search-container {
-        display: flex;
-        gap: 10px;
-    }
-
-    .search-bar {
-        padding: 8px;
-        width: 350px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
-    }
-
-    .filter-button {
-        padding: 8px 15px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .add-purchase-button {
-        text-decoration: none;
-        padding: 8px 15px;
-        background-color: #28a745;
-        color: white;
-        border-radius: 5px;
-    }
-
-    .filter-form {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    .purchase-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-        .purchase-table th, .purchase-table td {
-            border-bottom: 1px solid #ccc;
-            padding: 10px;
-            text-align: left;
-        }
-
-        .purchase-table th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-        }
-</style>

@@ -3,8 +3,6 @@
 @{
     ViewData["Title"] = "Add Purchase";
 
-
-
     var storageProducts = ViewBag.StorageProducts as List<string> ?? new List<string>();
 }
 
@@ -21,7 +19,7 @@
 
         <div class="form-group">
             <label for="productName">Име на продукт:</label>
-            <input type="text" id="productName" name="Име" class="form-control" list="storageProducts" required />
+            <input type="text" id="productName" name="Name" class="form-control" list="storageProducts" required />
 
             <!-- Datalist for suggestions -->
             <datalist id="storageProducts">
@@ -35,13 +33,16 @@
 
         <div class="form-group">
             <label for="quantity">Количество:</label>
-            <input type="number" id="quantity" name="Количество" class="form-control" min="0.01" step="0.01" required />
+            <input type="number" id="quantity" name="Quantity" class="form-control" min="0.01" step="0.01" required />
         </div>
 
-        <select asp-for="UnitType" class="form-control">
-            <option value="Kg.">Килограми.</option>
-            <option value="Num.">Число.</option>
-        </select>
+        <div class="form-group">
+            <label>Мерна единица:</label>
+            <select asp-for="UnitType" class="form-control">
+                <option value="кг.">Килограми</option>
+                <option value="бр.">Брой</option>
+            </select>
+        </div>
 
         <div class="form-group">
             <label for="productPrice">Цена на продукт:</label>
@@ -50,7 +51,7 @@
 
         <input type="hidden" name="TotalPrice" value="@Model.TotalPrice" />
 
-        <button type="submit" class="submit-button">Добави Поръчка</button>
+        <button type="submit" class="btn btn-success">Добави Поръчка</button>
     </form>
 </div>
 
@@ -64,15 +65,6 @@
         padding: 8px;
         border: 1px solid #ccc;
         border-radius: 5px;
-    }
-
-    .submit-button {
-        padding: 10px 15px;
-        background-color: #28a745;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
     }
 
     .content {

@@ -2,7 +2,6 @@
 using Aleris.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 
 namespace Aleris.Controllers
 {
@@ -178,7 +177,10 @@ namespace Aleris.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var company = await _context.Companies.FindAsync(id);
+            var company = _context.Companies
+                .Include(c => c.Storage)  // Ensure Storages are included
+                .FirstOrDefault(c => c.Id == id);
+
             if (company == null)
             {
                 return NotFound();
@@ -196,7 +198,10 @@ namespace Aleris.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var company = await _context.Companies.FindAsync(id);
+            var company = _context.Companies
+              .Include(c => c.Sales)  // Ensure Sales are included
+              .FirstOrDefault(c => c.Id == id);
+
             if (company == null)
             {
                 return NotFound();

@@ -88,4 +88,9 @@ button.accept-policy {
     position: absolute;
     bottom: 0;
     left: 0;
+    max-height: 70px !important;
+    justify-content: center;
+    display: flex !important;
+    align-content: center;
+    flex-wrap: wrap;
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aleris.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250225175752_Initial-Create")]
+    [Migration("20250227151938_Initial-Create")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -168,6 +168,13 @@ namespace Aleris.Migrations
                     b.Property<decimal>("Quantity")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("UnitType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
@@ -184,9 +191,6 @@ namespace Aleris.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AllowNegativeQuantities")
-                        .HasColumnType("int");
 
                     b.Property<int>("AutoProduction")
                         .HasColumnType("int");

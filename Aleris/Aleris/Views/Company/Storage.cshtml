@@ -1,10 +1,88 @@
 ﻿@model Aleris.Models.Company
 
 @{
-    ViewData["Title"] = "Склад";
+    ViewData["Title"] = Model.Name;
 }
 
 <div class="content">
-    <h1>Склад за @Model.Name:</h1>
+    <h1>Наличности за @Model.Name:</h1>
+
+    <div class="purchase-header">
+        <div class="search-container">
+            <input type="text" id="search-bar" class="search-bar" placeholder="Търсене по име на продукт">
+            <div class="search-icon-container">
+                <i class="bi bi-search" id="search-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <table class="purchase-table">
+        <thead>
+            <tr>
+                <th>Име на продукт</th>
+                <th>Количество</th>
+                <th>Тип на количество</th>
+                <th>Цена на продукт</th>
+                <th>Обща сума</th>
+            </tr>
+        </thead>
+        <tbody id="purchase-table-body">
+            @foreach (var storage in Model.Storage)
+            {
+                <tr>
+                    <td>@storage.ProductName</td>
+                    <td>@storage.Quantity</td>
+                    <td>@storage.UnitType</td>
+                    <td>@storage.ProductPrice.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</td>
+                    <td>@storage.TotalPrice.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
+<!-- JavaScript for Filtering Logic -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchBar = document.getElementById("search-bar");
+
+        // Search functionality
+        searchBar.addEventListener("input", function () {
+            const searchQuery = searchBar.value.toLowerCase();
+            const rows = document.querySelectorAll("#purchase-table-body tr");
+
+            rows.forEach(row => {
+                const productName = row.cells[0].innerText.toLowerCase();  // Product name is in the 1st column
+
+                // Show or hide row based on the search query
+                if (productName.includes(searchQuery)) {
+                    row.style.display = ""; // Show the row
+                } else {
+                    row.style.display = "none"; // Hide the row
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    .search-container {
+        position: relative;
+    }
+
+    .search-bar {
+        padding-right: 30px; /* Make space for the icon on the right */
+    }
+
+    .search-icon-container {
+        position: absolute;
+        right: 10px; /* Position icon on the right side */
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    #search-icon {
+        font-size: 20px;
+        color: #555;
+    }
+</style>
