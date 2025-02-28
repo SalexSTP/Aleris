@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aleris.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250227151938_Initial-Create")]
+    [Migration("20250228143518_Initial-Create")]
     partial class InitialCreate
     {
         /// <inheritdoc />

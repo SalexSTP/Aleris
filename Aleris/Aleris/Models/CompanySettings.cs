@@ -81,14 +81,6 @@ namespace Aleris.Models
             FiveDecimals = 5
         }
 
-        public enum NegativeQuantities
-        {
-            [Display(Name = "Да")]
-            Yes = 1,
-            [Display(Name = "Не")]
-            No = 0
-        }
-
         public enum RevisionMethod
         {
             [Display(Name = "Доставна цена")]

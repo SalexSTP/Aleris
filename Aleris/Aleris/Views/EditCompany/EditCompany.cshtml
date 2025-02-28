@@ -1,0 +1,251 @@
+﻿@using System.ComponentModel.DataAnnotations
+@model Aleris.Models.Company
+
+@{
+    ViewData["Title"] = "Редактиране на компания";
+}
+
+<div class="content">
+    <h1>Редактиране на @Model.Name</h1>
+
+    <form asp-action="EditCompany" method="post">
+        @Html.AntiForgeryToken()
+
+        <!-- Company Information -->
+        <h3>Основна информация за компанията</h3>
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Име на компания*</label>
+            <input asp-for="Name" class="form-control" required>
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Bulstat" class="form-label">Булстат (не може да се редактира)</label>
+            <input asp-for="Bulstat" class="form-control" required readonly>
+            <span asp-validation-for="Bulstat" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="VatNumber" class="form-label">Число на ДДС (незадължително)</label>
+            <input asp-for="VatNumber" class="form-control">
+            <span asp-validation-for="VatNumber" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="City" class="form-label">Град*</label>
+            <input asp-for="City" class="form-control" required>
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Address" class="form-label">Адрес*</label>
+            <input asp-for="Address" class="form-control" required>
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Manager" class="form-label">Име на мениджър</label>
+            <input asp-for="Manager" class="form-control">
+            <span asp-validation-for="Manager" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PhoneNumber" class="form-label">Телефонен номер*</label>
+            <input asp-for="PhoneNumber" class="form-control" required>
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Имейл*</label>
+            <input asp-for="Email" class="form-control" required>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <hr />
+
+        <!-- Company Settings -->
+        <h3>Настройки на компанията</h3>
+
+        <!-- VAT Registered -->
+        <div class="mb-3">
+            <label class="form-label">Регистриран по ДДС?</label>
+            @Html.DropDownListFor(
+                     model => model.CompanySettings.IsVatRegistered,
+                     new SelectList(
+                     Enum.GetValues(typeof(Aleris.Models.CompanySettings.VatRegistered))
+                     .Cast<Aleris.Models.CompanySettings.VatRegistered>()
+                     .Select(e => new
+                     {
+                         Value = e,
+                         Text = e.GetType()
+                     .GetField(e.ToString())
+                     .GetCustomAttributes(typeof(DisplayAttribute), false)
+                     .Cast<DisplayAttribute>()
+                     .SingleOrDefault()
+                     ?.Name ?? e.ToString()
+                     }),
+                     "Value", "Text",
+                     Model.CompanySettings.IsVatRegistered))
+            <span asp-validation-for="CompanySettings.IsVatRegistered" class="text-danger"></span>
+        </div>
+
+        <!-- VAT Included in Prices -->
+        <div class="mb-3">
+            <label class="form-label">ДДС включен ли е в цените?</label>
+            @Html.DropDownListFor(
+                     model => model.CompanySettings.IsVatIncludedInPrices,
+                     new SelectList(
+                     Enum.GetValues(typeof(Aleris.Models.CompanySettings.IsVatIncluded))
+                     .Cast<Aleris.Models.CompanySettings.IsVatIncluded>()
+                     .Select(e => new
+                     {
+                         Value = e,
+                         Text = e.GetType()
+                     .GetField(e.ToString())
+                     .GetCustomAttributes(typeof(DisplayAttribute), false)
+                     .Cast<DisplayAttribute>()
+                     .SingleOrDefault()
+                     ?.Name ?? e.ToString()
+                     }),
+                     "Value", "Text",
+                     Model.CompanySettings.IsVatIncludedInPrices))
+            <span asp-validation-for="CompanySettings.IsVatIncludedInPrices" class="text-danger"></span>
+        </div>
+
+        <!-- Price Precision -->
+        <div class="mb-3">
+            <label asp-for="CompanySettings.PricePrecision" class="form-label">Точност на цените</label>
+            @Html.DropDownListFor(
+                     model => model.CompanySettings.PricePrecision,
+                     new SelectList(
+                     Enum.GetValues(typeof(Aleris.Models.CompanySettings.PrecisionOfPrice))
+                     .Cast<Aleris.Models.CompanySettings.PrecisionOfPrice>()
+                     .Select(e => new
+                     {
+                         Value = e,
+                         Text = e.GetType()
+                     .GetField(e.ToString())
+                     .GetCustomAttributes(typeof(DisplayAttribute), false)
+                     .Cast<DisplayAttribute>()
+                     .SingleOrDefault()
+                     ?.Name ?? e.ToString()
+                     }),
+                     "Value", "Text",
+                     Model.CompanySettings.PricePrecision))
+            <span asp-validation-for="CompanySettings.PricePrecision" class="text-danger"></span>
+        </div>
+
+        <!-- Quantity Precision -->
+        <div class="mb-3">
+            <label asp-for="CompanySettings.QuantityPrecision" class="form-label">Точност на количество</label>
+            @Html.DropDownListFor(
+                     model => model.CompanySettings.QuantityPrecision,
+                     new SelectList(
+                     Enum.GetValues(typeof(Aleris.Models.CompanySettings.PrecisionOfQuantity))
+                     .Cast<Aleris.Models.CompanySettings.PrecisionOfQuantity>()
+                     .Select(e => new
+                     {
+                         Value = e,
+                         Text = e.GetType()
+                     .GetField(e.ToString())
+                     .GetCustomAttributes(typeof(DisplayAttribute), false)
+                     .Cast<DisplayAttribute>()
+                     .SingleOrDefault()
+                     ?.Name ?? e.ToString()
+                     }),
+                     "Value", "Text",
+                     Model.CompanySettings.QuantityPrecision))
+            <span asp-validation-for="CompanySettings.QuantityPrecision" class="text-danger"></span>
+        </div>
+
+        <!-- Method Of Revision -->
+        <div class="mb-3">
+            <label asp-for="CompanySettings.MethodOfRevision" class="form-label">Метод на ревизия</label>
+            @Html.DropDownListFor(
+                     model => model.CompanySettings.MethodOfRevision,
+                     new SelectList(
+                     Enum.GetValues(typeof(Aleris.Models.CompanySettings.RevisionMethod))
+                     .Cast<Aleris.Models.CompanySettings.RevisionMethod>()
+                     .Select(e => new
+                     {
+                         Value = e,
+                         Text = e.GetType()
+                     .GetField(e.ToString())
+                     .GetCustomAttributes(typeof(DisplayAttribute), false)
+                     .Cast<DisplayAttribute>()
+                     .SingleOrDefault()
+                     ?.Name ?? e.ToString()
+                     }),
+                     "Value", "Text",
+                     Model.CompanySettings.MethodOfRevision))
+            <span asp-validation-for="CompanySettings.MethodOfRevision" class="text-danger"></span>
+        </div>
+
+        <!-- Auto Production -->
+        <div class="mb-3">
+            <label asp-for="CompanySettings.AutoProduction" class="form-label">Автоматично производство</label>
+            @Html.DropDownListFor(
+                     model => model.CompanySettings.AutoProduction,
+                     new SelectList(
+                     Enum.GetValues(typeof(Aleris.Models.CompanySettings.IsAutoProduction))
+                     .Cast<Aleris.Models.CompanySettings.IsAutoProduction>()
+                     .Select(e => new
+                     {
+                         Value = e,
+                         Text = e.GetType()
+                     .GetField(e.ToString())
+                     .GetCustomAttributes(typeof(DisplayAttribute), false)
+                     .Cast<DisplayAttribute>()
+                     .SingleOrDefault()
+                     ?.Name ?? e.ToString()
+                     }),
+                     "Value", "Text",
+                     Model.CompanySettings.AutoProduction))
+            <span asp-validation-for="CompanySettings.AutoProduction" class="text-danger"></span>
+        </div>
+
+        <!-- Work With Traders -->
+        <div class="mb-3">
+            <label asp-for="CompanySettings.WorkWithTraders" class="form-label">Работа с търговци</label>
+            @Html.DropDownListFor(
+                     model => model.CompanySettings.WorkWithTraders,
+                     new SelectList(
+                     Enum.GetValues(typeof(Aleris.Models.CompanySettings.Traders))
+                     .Cast<Aleris.Models.CompanySettings.Traders>()
+                     .Select(e => new
+                     {
+                         Value = e,
+                         Text = e.GetType()
+                     .GetField(e.ToString())
+                     .GetCustomAttributes(typeof(DisplayAttribute), false)
+                     .Cast<DisplayAttribute>()
+                     .SingleOrDefault()
+                     ?.Name ?? e.ToString()
+                     }),
+                     "Value", "Text",
+                     Model.CompanySettings.WorkWithTraders))
+            <span asp-validation-for="CompanySettings.WorkWithTraders" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Запазване</button>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<style>
+    .content {
+        margin-left: 0px !important;
+    }
+
+    hr {
+        border: 3px solid black;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+</style>

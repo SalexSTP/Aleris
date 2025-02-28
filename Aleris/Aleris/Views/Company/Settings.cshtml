@@ -1,10 +1,173 @@
-﻿@model Aleris.Models.Company
+﻿@using System.ComponentModel.DataAnnotations
+@model (Aleris.Models.Company Company, Aleris.Models.CompanySettings Settings)
 
 @{
-    ViewData["Title"] = "Настройки";
+    ViewData["Title"] = "Настройки на компанията";
 }
 
 <div class="content">
-    <h1>Настройки за @Model.Name:</h1>
+    <h1>Настройки за @Model.Company.Name:</h1>
+
+    <!-- Company Information Section -->
+    <div class="setting">
+        <table class="table table-bordered" style="width: 60%; margin: 0 auto;">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center fw-bold fs-5">Информация за компанията:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fw-bold">Име:</td>
+                    <td>@Model.Company.Name</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Булстат:</td>
+                    <td>@Model.Company.Bulstat</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Число на ДДС:</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(Model.Company.VatNumber))
+                        {
+                            <span>@Model.Company.VatNumber</span>
+                        }
+                        else
+                        {
+                            <span style="color:red;">*Невъведено*</span>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Град:</td>
+                    <td>@Model.Company.City</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Адрес:</td>
+                    <td>@Model.Company.Address</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Име на мениджър:</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(Model.Company.Manager))
+                        {
+                            <span>@Model.Company.Manager</span>
+                        }
+                        else
+                        {
+                            <span style="color:red;">*Невъведено*</span>
+                        }
+                    </td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Телефонен номер:</td>
+                    <td>@Model.Company.PhoneNumber</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Имейл:</td>
+                    <td>@Model.Company.Email</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Settings Section -->
+    <div class="setting settings-table">
+        <table class="table table-bordered" style="width: 60%; margin: 0 auto;">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-center fw-bold fs-5">Настройки на компанията:</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="fw-bold">Регистриран по ДДС?:</td>
+                    <td>@GetEnumDisplayName(Model.Settings.IsVatRegistered)</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">ДДС включен ли е в цените?:</td>
+                    <td>@GetEnumDisplayName(Model.Settings.IsVatIncludedInPrices)</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Точност на цените:</td>
+                    <td>@GetEnumDisplayName(Model.Settings.PricePrecision)</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Точност на количество:</td>
+                    <td>@GetEnumDisplayName(Model.Settings.QuantityPrecision)</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Метод на ревизия:</td>
+                    <td>@GetEnumDisplayName(Model.Settings.MethodOfRevision)</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Автоматична продукция:</td>
+                    <td>@GetEnumDisplayName(Model.Settings.AutoProduction)</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold">Работа с търговци:</td>
+                    <td>@GetEnumDisplayName(Model.Settings.WorkWithTraders)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Edit Button -->
+    <a href="@Url.Action("EditCompany", "EditCompany", new { id = Model.Company.Id })" class="btn btn-primary">Редактирай</a>
 </div>
 
+<style>
+    .setting {
+        margin-bottom: 50px !important;
+        width: 60% !important;
+        margin: 0 auto;
+    }
+
+    .table {
+        margin-bottom: 0;
+        padding: 0;
+        width: 100%;
+        font-size: 18px;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+        padding: 5px; /* Default padding */
+        margin-bottom: 5px;
+    }
+
+    .table th {
+        text-align: center;
+    }
+
+    .table td {
+        padding-left: 10px; /* Slight padding between text and cell borders */
+    }
+
+    /* Apply styles only to the second table with the settings-table class */
+    .settings-table .table td:first-child {
+        width: 50%; /* Make the first column narrower */
+    }
+
+    .settings-table .table td:last-child {
+        width: 50%; /* Make the second column larger, containing the values */
+    }
+
+    .fw-bold {
+        font-weight: 600;
+    }
+
+    .btn {
+        margin-top: 20px;
+    }
+</style>
+
+@functions {
+    public string GetEnumDisplayName(Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = (DisplayAttribute)Attribute.GetCustomAttribute(field, typeof(DisplayAttribute));
+        return attribute?.Name ?? value.ToString();
+    }
+}

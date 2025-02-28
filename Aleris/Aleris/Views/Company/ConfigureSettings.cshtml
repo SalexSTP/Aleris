@@ -58,7 +58,7 @@
 
     <!-- Price Precision -->
     <div class="mb-3">
-        <label asp-for="PricePrecision" class="form-label">Price Precision</label>
+        <label asp-for="PricePrecision" class="form-label">Точност на цените</label>
         @Html.DropDownListFor(
             model => model.PricePrecision,
             new SelectList(
@@ -101,7 +101,7 @@
 
     <!-- Revision Method -->
     <div class="mb-3">
-        <label class="form-label">Revision Method</label>
+        <label class="form-label">Метод на ревизия</label>
         @Html.DropDownListFor(
                  model => model.MethodOfRevision,
                  new SelectList(
@@ -147,7 +147,7 @@
 
     <!-- Work With Traders -->
     <div class="mb-3">
-        <label class="form-label">Работене с търговци</label>
+        <label class="form-label">Работа с търговци</label>
         @Html.DropDownListFor(
                  model => model.WorkWithTraders,
                  new SelectList(

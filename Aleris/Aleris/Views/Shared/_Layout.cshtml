@@ -65,14 +65,14 @@
                                     @Context.Session.GetString("UserName")
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="@Url.Action("Logout", "Account")">Logout</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Logout", "Account")">Изход</a></li>
                                 </ul>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Влизане</a>
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Вход</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Регистриране</a>
@@ -93,7 +93,7 @@
     @if (ViewData["IsCompanyPage"] != null)
     {
         <div class="sidebar">
-            <h4 class="text-center" style="margin-bottom:30px;">@Model.Name</h4>
+                <h4 class="text-center" style="margin-bottom:30px;">@ViewData["CompanyName"]</h4>
             <a href="@Url.Action("Statistics", "Company", new { id = companyId })" class="@(currentAction == "Statistics" ? "active" : "")">
                 <i class="bi bi-bar-chart"></i> Статистики
             </a>

@@ -145,6 +145,8 @@ namespace Aleris.Controllers
             }
 
             ViewData["IsCompanyPage"] = true;
+            ViewData["CompanyName"] = company.Name;
+
             return View("Statistics", company);
         }
 
@@ -166,6 +168,8 @@ namespace Aleris.Controllers
             }
 
             ViewData["IsCompanyPage"] = true;
+            ViewData["CompanyName"] = company.Name;
+
             return View("Purchases", company);
         }
 
@@ -187,6 +191,8 @@ namespace Aleris.Controllers
             }
 
             ViewData["IsCompanyPage"] = true;
+            ViewData["CompanyName"] = company.Name;
+
             return View("Storage", company);
         }
 
@@ -208,6 +214,8 @@ namespace Aleris.Controllers
             }
 
             ViewData["IsCompanyPage"] = true;
+            ViewData["CompanyName"] = company.Name;
+
             return View("Sales", company);
         }
 
@@ -226,6 +234,8 @@ namespace Aleris.Controllers
             }
 
             ViewData["IsCompanyPage"] = true;
+            ViewData["CompanyName"] = company.Name;
+
             return View("Members", company);
         }
 
@@ -237,14 +247,21 @@ namespace Aleris.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var company = await _context.Companies.FindAsync(id);
-            if (company == null)
+            var company = await _context.Companies
+                .Include(c => c.CompanySettings)  // Ensure Settings are included
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (company == null || company.CompanySettings == null)
             {
                 return NotFound();
             }
 
             ViewData["IsCompanyPage"] = true;
-            return View("Settings", company);
+            ViewData["CompanyName"] = company.Name;
+
+            var model = (company, company.CompanySettings); // Create the required tuple
+            return View("Settings", model);
         }
+
     }
 }
