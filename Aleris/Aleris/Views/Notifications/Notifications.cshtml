@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Aleris.Models.Invite>
+
+@{
+    ViewData["Title"] = "Notifications";
+}
+
+<h1>Notifications</h1>
+
+@if (Model != null && Model.Any())
+{
+    <ul class="list-group" style="width: 50%;">
+        @foreach (var invite in Model)
+        {
+            <li class="list-group-item">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong class="h5">Company:</strong> @invite.Company.Name
+                    </div>
+                    <div>
+                        <strong class="h5">Date:</strong> @invite.DateSent
+                    </div>
+                    <div>
+                        <form method="post" asp-action="AcceptInvite" asp-controller="Notifications" asp-route-id="@invite.Id" class="d-inline">
+                            <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                        </form>
+                        <form method="post" asp-action="RejectInvite" asp-controller="Notifications" asp-route-id="@invite.Id" class="d-inline ml-3">
+                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                        </form>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No pending invites.</p>
+}

@@ -11,19 +11,19 @@ namespace Aleris.Data
         }
 
         public DbSet<User> Users { get; set; }
-
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyMember> CompanyMembers { get; set; }
         public DbSet<CompanySettings> CompanySettings { get; set; }
         public DbSet<CompanyStorage> CompanyStorages { get; set; }
         public DbSet<CompanyPurchase> CompanyPurchases { get; set; }
         public DbSet<CompanySale> CompanySales { get; set; }
+        public DbSet<Invite> Invites { get; set; } // ✅ Added Invites
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Връзка Many-to-Many за CompanyMembers
+            // Company → Team Members
             modelBuilder.Entity<CompanyMember>()
                 .HasOne(cm => cm.User)
                 .WithMany(u => u.CompanyMemberships)
@@ -34,6 +34,20 @@ namespace Aleris.Data
                 .HasOne(cm => cm.Company)
                 .WithMany(c => c.TeamMembers)
                 .HasForeignKey(cm => cm.CompanyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Company → Invites
+            modelBuilder.Entity<Company>()
+                .HasMany(c => c.Invites)
+                .WithOne(i => i.Company)
+                .HasForeignKey(i => i.CompanyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // User → Invites
+            modelBuilder.Entity<Invite>()
+                .HasOne(i => i.User)
+                .WithMany(u => u.Invites)
+                .HasForeignKey(i => i.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Company → Storage
@@ -59,7 +73,7 @@ namespace Aleris.Data
 
             // Define relationship between Sales & Storage
             modelBuilder.Entity<CompanySale>()
-                .HasOne(s => s.Storage) // Now exists
+                .HasOne(s => s.Storage)
                 .WithMany()
                 .HasForeignKey(s => s.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);

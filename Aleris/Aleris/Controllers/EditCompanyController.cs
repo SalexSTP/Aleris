@@ -45,6 +45,8 @@ namespace Aleris.Controllers
 
                 // Update company information (excluding Bulstat, as per your request)
                 existingCompany.Name = model.Name;
+                existingCompany.Bulstat = model.Bulstat;
+                existingCompany.VatNumber = model.VatNumber;
                 existingCompany.Address = model.Address;
                 existingCompany.Manager = model.Manager;
                 existingCompany.PhoneNumber = model.PhoneNumber;

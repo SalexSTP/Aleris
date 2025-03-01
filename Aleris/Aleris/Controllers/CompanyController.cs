@@ -65,7 +65,10 @@ namespace Aleris.Controllers
                     {
                         UserId = user.Id,
                         CompanyId = company.Id,
-                        Role = UserRole.Admin
+                        Role = UserRole.Admin,
+                        Name = user.Name,
+                        Email = user.Email,
+                        Status = MemberStatus.In
                     };
 
                     _context.CompanyMembers.Add(companyMember);
@@ -227,16 +230,26 @@ namespace Aleris.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var company = await _context.Companies.FindAsync(id);
+            var company = await _context.Companies
+                .Include(c => c.TeamMembers)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
             if (company == null)
             {
                 return NotFound();
             }
 
+            var invitations = await _context.Invites
+                .Include(i => i.User)  // Ensure that the User is included
+                .Where(i => i.CompanyId == id && i.Status == InviteStatus.Pending)  // Direct comparison with Enum value
+                .ToListAsync();
+
             ViewData["IsCompanyPage"] = true;
             ViewData["CompanyName"] = company.Name;
+            ViewBag.Members = company.TeamMembers;
+            ViewBag.PendingInvitations = invitations;
 
-            return View("Members", company);
+            return View(company);
         }
 
         [HttpGet]
@@ -262,6 +275,5 @@ namespace Aleris.Controllers
             var model = (company, company.CompanySettings); // Create the required tuple
             return View("Settings", model);
         }
-
     }
 }

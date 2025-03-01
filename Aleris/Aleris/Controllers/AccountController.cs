@@ -8,14 +8,12 @@ using System.Text;
 
 namespace Aleris.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
-        private readonly ApplicationDbContext _context;
-
-        public AccountController(ApplicationDbContext context)
+        public AccountController(ApplicationDbContext context) : base(context)
         {
-            _context = context;
         }
+
         public bool isLogged = false;
 
         // GET: Register
@@ -66,7 +64,7 @@ namespace Aleris.Controllers
             // Store user details in session
             HttpContext.Session.SetString("UserEmail", existingUser.Email);
             HttpContext.Session.SetString("UserName", existingUser.Name);
-            HttpContext.Session.SetString("UserId", existingUser.Id.ToString());
+            HttpContext.Session.SetInt32("UserId", existingUser.Id);
             isLogged = true;
 
             return RedirectToAction("Index", "Home");

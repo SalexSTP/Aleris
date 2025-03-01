@@ -47,6 +47,8 @@ namespace Aleris.Models
         public ICollection<CompanyPurchase> Purchases { get; set; } = new List<CompanyPurchase>();
         public ICollection<CompanySale> Sales { get; set; } = new List<CompanySale>();
 
+        public ICollection<Invite> Invites { get; set; } = new List<Invite>();
+
         public Company()
         {
             CompanySettings = new CompanySettings();

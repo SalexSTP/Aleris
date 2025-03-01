@@ -57,6 +57,16 @@
                         @if (Context.Session.GetString("UserEmail") != null)
                         {
                             <li class="nav-item">
+                                <a class="nav-link" href="@Url.Action("Notifications", "Notifications")">
+                                    Notifications
+                                    @if (ViewData["PendingInvitesCount"] != null && (int)ViewData["PendingInvitesCount"] > 0)
+                                    {
+                                        <span class="badge badge-danger">@ViewData["PendingInvitesCount"]</span>
+                                    }
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
                                 <a class="nav-link text-dark" href="@Url.Action("CreateCompany", "Company")">Създаване на компания</a>
                             </li>
 
@@ -93,7 +103,7 @@
     @if (ViewData["IsCompanyPage"] != null)
     {
         <div class="sidebar">
-                <h4 class="text-center" style="margin-bottom:30px;">@ViewData["CompanyName"]</h4>
+            <h4 class="text-center" style="margin-bottom:30px;">@ViewData["CompanyName"]</h4>
             <a href="@Url.Action("Statistics", "Company", new { id = companyId })" class="@(currentAction == "Statistics" ? "active" : "")">
                 <i class="bi bi-bar-chart"></i> Статистики
             </a>
@@ -107,7 +117,7 @@
                 <i class="bi bi-cash-stack"></i> Продажби
             </a>
             <a href="@Url.Action("Members", "Company", new { id = companyId })" class="@(currentAction == "Members" ? "active" : "")">
-                <i class="bi bi-people"></i> Членове
+                <i class="bi bi-people"></i> Екип
             </a>
             <a href="@Url.Action("Settings", "Company", new { id = companyId })" class="@(currentAction == "Settings" ? "active" : "")">
                 <i class="bi bi-gear"></i> Настройки
@@ -127,7 +137,7 @@
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script> 
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

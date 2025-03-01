@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aleris.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250228143518_Initial-Create")]
+    [Migration("20250301154339_Initial-Create")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -85,7 +85,19 @@ namespace Aleris.Migrations
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -259,6 +271,38 @@ namespace Aleris.Migrations
                     b.ToTable("CompanyStorages");
                 });
 
+            modelBuilder.Entity("Aleris.Models.Invite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateSent")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Invites");
+                });
+
             modelBuilder.Entity("Aleris.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -362,10 +406,31 @@ namespace Aleris.Migrations
                     b.Navigation("Company");
                 });
 
+            modelBuilder.Entity("Aleris.Models.Invite", b =>
+                {
+                    b.HasOne("Aleris.Models.Company", "Company")
+                        .WithMany("Invites")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Aleris.Models.User", "User")
+                        .WithMany("Invites")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Aleris.Models.Company", b =>
                 {
                     b.Navigation("CompanySettings")
                         .IsRequired();
+
+                    b.Navigation("Invites");
 
                     b.Navigation("Purchases");
 
@@ -379,6 +444,8 @@ namespace Aleris.Migrations
             modelBuilder.Entity("Aleris.Models.User", b =>
                 {
                     b.Navigation("CompanyMemberships");
+
+                    b.Navigation("Invites");
                 });
 #pragma warning restore 612, 618
         }

@@ -25,5 +25,7 @@ namespace Aleris.Models
         public string PhoneNumber { get; set; }
 
         public ICollection<CompanyMember> CompanyMemberships { get; set; } = new List<CompanyMember>();
+
+        public ICollection<Invite> Invites { get; set; } = new List<Invite>();
     }
 }
