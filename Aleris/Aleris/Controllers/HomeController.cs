@@ -17,7 +17,19 @@ namespace Aleris.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return View();
+            }
+
+            var userCompanies = _context.CompanyMembers
+                .Where(cm => cm.User.Email == userEmail)
+                .Select(cm => cm.Company)
+                .ToList();
+
+            return View(userCompanies);
         }
 
         public IActionResult Privacy()

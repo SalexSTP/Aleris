@@ -4,7 +4,35 @@
 
 @if (Context.Session.GetString("UserEmail") != null)
 {
-    
+    <div class="d-flex justify-content-center">
+        <h1 class="mb-4">Вашите компании:</h1>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Компания</th>
+                <th>Булстат</th>
+                <th>Имейл</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var company in Model)
+            {
+                <tr>
+                    <td>@company.Name</td>
+                    <td>@company.Bulstat</td>
+                    <td>@company.Email</td>
+                    <td>
+                        <a href="@Url.Action("Statistics", "Company", new { id = company.Id })" class="btn btn-primary">
+                            Влез
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 else
 {
@@ -52,4 +80,8 @@ else
         transform: scale(0.95);
     }
 
+    th, td {
+        text-align: center;
+        vertical-align: middle;
+    }
 </style>
