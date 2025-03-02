@@ -20,7 +20,7 @@ namespace Aleris.Models
         public string Password { get; set; }
 
         [Required]
-        [StringLength(10, MinimumLength = 9)]
+        [StringLength(12, MinimumLength = 9)]
         [Phone]
         public string PhoneNumber { get; set; }
 
