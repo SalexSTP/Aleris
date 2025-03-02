@@ -43,7 +43,18 @@
             {
                 <tr>
                     <td style="vertical-align: middle;">@member.Name</td>
-                    <td style="vertical-align: middle;">@member.Role</td>
+                    @if (member.Role == UserRole.Admin)
+                    {
+                        <td style="vertical-align: middle;">Администратор</td>
+                    }
+                    else if (member.Role == UserRole.Editor)
+                    {
+                        <td style="vertical-align: middle;">Редактор</td>
+                    }
+                    else
+                    {
+                        <td style="vertical-align: middle;">Зрител</td>
+                    }
                     <td style="vertical-align: middle;">@member.Email</td>
                     <td style="vertical-align: middle;">
                         @if (member.Status.Equals(MemberStatus.PendingInvite))
@@ -84,10 +95,10 @@
 
 
     <h3>Екип с покана:</h3>
-    <ul>
+    <ul class="list-group">
         @foreach (var invite in ViewBag.PendingInvitations as List<Aleris.Models.Invite>)
         {
-            <li>@invite.User.Email - Статус: @invite.Status</li> <!-- Access the email via User -->
+            <li class="list-group-item">@invite.User.Email - Статус: Изчакване</li> <!-- Access the email via User -->
         }
     </ul>
 </div>

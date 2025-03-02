@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<Aleris.Models.Invite>
 
 @{
-    ViewData["Title"] = "Notifications";
+    ViewData["Title"] = "Известия";
 }
 
-<h1>Notifications</h1>
+<h1>Известия</h1>
 
 @if (Model != null && Model.Any())
 {
@@ -14,17 +14,17 @@
             <li class="list-group-item">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <strong class="h5">Company:</strong> @invite.Company.Name
+                        <strong class="h5">Компания:</strong> @invite.Company.Name
                     </div>
                     <div>
-                        <strong class="h5">Date:</strong> @invite.DateSent
+                        <strong class="h5">Дата:</strong> @invite.DateSent
                     </div>
                     <div>
                         <form method="post" asp-action="AcceptInvite" asp-controller="Notifications" asp-route-id="@invite.Id" class="d-inline">
-                            <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                            <button type="submit" class="btn btn-success btn-sm">Приеми</button>
                         </form>
                         <form method="post" asp-action="RejectInvite" asp-controller="Notifications" asp-route-id="@invite.Id" class="d-inline ml-3">
-                            <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Откажи</button>
                         </form>
                     </div>
                 </div>
@@ -34,5 +34,5 @@
 }
 else
 {
-    <p>No pending invites.</p>
+    <p>Няма нови известия.</p>
 }

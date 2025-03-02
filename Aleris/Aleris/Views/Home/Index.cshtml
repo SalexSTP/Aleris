@@ -40,6 +40,10 @@ else
         <h1 class="display-2 fw-bold">Заповядайте в Aleris</h1>
         <p class="lead">Днес започва приключението ти! Създай си акаунт днес и се запознай с функциите на Aleris!</p>
         <a href="@Url.Action("Login", "Account")" class="btn btn-lg btn-light shadow mt-3">Започни</a>
+
+        <div class="mt-5">
+            <img src="~/images/aleris_logo.png" alt="Aleris Logo" class="homepage-logo">
+        </div>
     </div>
 }
 
@@ -55,7 +59,7 @@ else
     }
 
     h1 {
-        color: #0d47a1; /* Dark blue for contrast */
+        color: #00949e; /* Dark blue for contrast */
     }
 
     p.lead {
@@ -78,6 +82,11 @@ else
     .btn-light:active {
         background-color: #1565c0;
         transform: scale(0.95);
+    }
+
+    .homepage-logo {
+        max-width: 300px; /* Adjust the size as needed */
+        height: auto;
     }
 
     th, td {

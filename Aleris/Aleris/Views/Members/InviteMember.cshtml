@@ -4,7 +4,7 @@
     ViewData["Title"] = "Покана на член към екипа";
 }
 
-<h1>Покани нов член на екипа</h1>
+<h1>Покани нов член към екипа</h1>
 
 <form method="post" action="@Url.Action("SendInvite", "Members")">
     <input type="hidden" name="CompanyId" value="@Model" />
@@ -17,8 +17,8 @@
     <div class="form-group">
         <label for="role">Избери роля:</label>
         <select class="form-control" id="role" name="Role" required>
-            <option value="Editor">Editor</option>
-            <option value="Viewer">Viewer</option>
+            <option value="Editor">Редактор</option>
+            <option value="Viewer">Зрител</option>
         </select>
     </div>
 
