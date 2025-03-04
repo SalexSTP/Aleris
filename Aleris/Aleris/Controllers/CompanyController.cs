@@ -147,11 +147,25 @@ namespace Aleris.Controllers
                 return NotFound();
             }
 
+            var purchases = await _context.CompanyPurchases
+                .Where(p => p.CompanyId == id)
+                .OrderBy(p => p.Date)
+                .ToListAsync();
+
+            var sales = await _context.CompanySales
+                .Where(s => s.CompanyId == id)
+                .OrderBy(s => s.Date)
+                .ToListAsync();
+
+            var statistics = new CompanyStatistics(purchases, sales);
+
             ViewData["IsCompanyPage"] = true;
             ViewData["CompanyName"] = company.Name;
 
-            return View("Statistics", company);
+            return View("Statistics", statistics); 
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Purchases(int id)

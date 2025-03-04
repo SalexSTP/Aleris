@@ -1,10 +1,74 @@
-﻿@model Aleris.Models.Company
+﻿@model Aleris.Models.CompanyStatistics
 
 @{
     ViewData["Title"] = "Статистики";
 }
 
 <div class="content">
-    <h1>Статистики за @Model.Name:</h1>
+    <h1>Статистики за @Model.CompanyName:</h1>
+    <h2>Статистика на покупки и поръчки</h2>
+    <div class="chart-container">
+        <canvas id="statisticsChart"></canvas>
+    </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var ctx = document.getElementById('statisticsChart').getContext('2d');
+        var statisticsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.Dates)),
+                datasets: [
+                    {
+                        label: 'Покупки',
+                        data: @Html.Raw(Json.Serialize(Model.Purchases)),
+                        backgroundColor: 'blue'
+                    },
+                    {
+                        label: 'Поръчки',
+                        data: @Html.Raw(Json.Serialize(Model.Orders)),
+                        backgroundColor: 'green'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+<style>
+    /* Основно съдържание */
+    .content {
+        padding: 20px;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden; /* Премахва скролването */
+    }
+
+    /* Графиката да се разпъва добре */
+    .chart-container {
+        width: 90%;
+        height: 80vh; /* По-голяма височина */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #statisticsChart {
+        width: 100% !important;
+        height: 100% !important;
+    }
+</style>
