@@ -55,7 +55,7 @@
             @foreach (var sale in Model.Sales)
             {
                 <tr>
-                    <td>@sale.Date</td>
+                    <td>@sale.Date.ToString("M/d/yyyy HH:mm:ss")</td>
                     <td>@sale.Name</td>
                     <td>@sale.Quantity</td>
                     <td>@sale.UnitType</td>
