@@ -9,12 +9,15 @@
 <form asp-action="EditMember" method="post">
     <div class="form-group">
         <label for="Name">Име</label>
-        <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
+        <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" readonly />
     </div>
 
     <div class="form-group">
         <label for="Role">Роля</label>
-        @Html.DropDownListFor(m => m.Role, new SelectList(ViewBag.Roles as List<string>), new { @class = "form-control", required = "required" })
+        <select class="form-control" id="role" asp-for="Role" required>
+            <option value="Editor">Редактор</option>
+            <option value="Viewer">Зрител</option>
+        </select>
     </div>
 
     <div class="form-group">

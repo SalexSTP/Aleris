@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Настройки на компанията";
+    var currentUserId = Context.Session.GetInt32("UserId");
+    var isAdmin = Model.Company.TeamMembers.Any(m => m.UserId == currentUserId && m.Role == Aleris.Models.UserRole.Admin); // Check if the current user is an admin
 }
 
 <div class="content">
@@ -112,8 +114,11 @@
         </table>
     </div>
 
-    <!-- Edit Button -->
-    <a href="@Url.Action("EditCompany", "EditCompany", new { id = Model.Company.Id })" class="btn btn-primary">Редактирай</a>
+    @if(isAdmin)
+    {
+        <!-- Edit Button -->
+        <a href="@Url.Action("EditCompany", "EditCompany", new { id = Model.Company.Id })" class="btn btn-primary">Редактирай</a>
+    }
 </div>
 
 <style>

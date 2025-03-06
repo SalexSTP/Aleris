@@ -2,18 +2,25 @@
 
 @{
     ViewData["Title"] = Model.Name;
+    var currentUserId = Context.Session.GetInt32("UserId");
+    var isAdmin = Model.TeamMembers.Any(m => m.UserId == currentUserId && m.Role == Aleris.Models.UserRole.Admin); // Check if the current user is an admin
+    var isEditor = Model.TeamMembers.Any(m => m.UserId == currentUserId && m.Role == Aleris.Models.UserRole.Editor); // Check if the current user is an editor
 }
 
 <div class="content">
-    <h1>Поръчки за @Model.Name:</h1>
+    <h1>Покупки за @Model.Name:</h1>
 
     <div class="purchase-header">
         <div class="search-container">
             <button class="filter-button" id="filter-btn">Търсене</button>
         </div>
-        <a href="@Url.Action("AddPurchase", "Purchases", new { companyId = Model.Id })" class="btn btn-success">
-            + Добавяне на поръчка
-        </a>
+
+        @if (isAdmin || isEditor)
+        {
+            <a href="@Url.Action("AddPurchase", "Purchases", new { companyId = Model.Id })" class="btn btn-success">
+                + Добавяне на покупка
+            </a>
+        }
     </div>
 
     <!-- Filter Form (Hidden Initially) -->

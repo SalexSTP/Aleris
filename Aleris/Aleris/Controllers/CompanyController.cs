@@ -166,7 +166,6 @@ namespace Aleris.Controllers
         }
 
 
-
         [HttpGet]
         public async Task<IActionResult> Purchases(int id)
         {
@@ -177,6 +176,7 @@ namespace Aleris.Controllers
 
             var company = _context.Companies
                 .Include(c => c.Purchases)  // Ensure Purchases are included
+                .Include(c => c.TeamMembers)
                 .FirstOrDefault(c => c.Id == id);
 
             if (company == null)
@@ -186,6 +186,7 @@ namespace Aleris.Controllers
 
             ViewData["IsCompanyPage"] = true;
             ViewData["CompanyName"] = company.Name;
+            ViewBag.Members = company.TeamMembers;
 
             return View("Purchases", company);
         }
@@ -200,6 +201,7 @@ namespace Aleris.Controllers
 
             var company = _context.Companies
                 .Include(c => c.Storage)  // Ensure Storages are included
+                .Include(c => c.TeamMembers)
                 .FirstOrDefault(c => c.Id == id);
 
             if (company == null)
@@ -209,6 +211,7 @@ namespace Aleris.Controllers
 
             ViewData["IsCompanyPage"] = true;
             ViewData["CompanyName"] = company.Name;
+            ViewBag.Members = company.TeamMembers;
 
             return View("Storage", company);
         }
@@ -223,6 +226,7 @@ namespace Aleris.Controllers
 
             var company = _context.Companies
               .Include(c => c.Sales)  // Ensure Sales are included
+              .Include(c => c.TeamMembers)
               .FirstOrDefault(c => c.Id == id);
 
             if (company == null)
@@ -232,6 +236,7 @@ namespace Aleris.Controllers
 
             ViewData["IsCompanyPage"] = true;
             ViewData["CompanyName"] = company.Name;
+            ViewBag.Members = company.TeamMembers;
 
             return View("Sales", company);
         }
@@ -276,6 +281,7 @@ namespace Aleris.Controllers
 
             var company = await _context.Companies
                 .Include(c => c.CompanySettings)  // Ensure Settings are included
+                .Include(c => c.TeamMembers)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (company == null || company.CompanySettings == null)
@@ -285,6 +291,7 @@ namespace Aleris.Controllers
 
             ViewData["IsCompanyPage"] = true;
             ViewData["CompanyName"] = company.Name;
+            ViewBag.Members = company.TeamMembers;
 
             var model = (company, company.CompanySettings); // Create the required tuple
             return View("Settings", model);

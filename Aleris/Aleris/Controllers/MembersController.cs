@@ -48,8 +48,7 @@ namespace Aleris.Controllers
             // Don't modify CompanyId, make sure it's preserved
             model.CompanyId = member.CompanyId;
 
-            // Update only the editable properties like Name, Email, Role
-            member.Name = model.Name;
+            // Update Role
             member.Role = model.Role;
 
             try

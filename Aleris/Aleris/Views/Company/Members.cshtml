@@ -35,7 +35,10 @@
                 <th scope="col">Роля</th>
                 <th scope="col">Имейл</th>
                 <th scope="col">Статус</th>
-                <th scope="col">Действия</th>
+                @if (isAdmin)
+                {
+                    <th scope="col">Действия</th>
+                }
             </tr>
         </thead>
         <tbody>
@@ -66,39 +69,44 @@
                             <span class="badge bg-success">Одобрен</span>
                         }
                     </td>
-                    <td style="vertical-align: central;">
-                        @if (member.UserId != currentUserId)
-                        {
-                            <div style="display: flex; justify-content:center;">
-                                <a href="@Url.Action("EditMember", "Members", new { id = member.Id })" style="display: inline; margin-right:5px;">
-                                    <i class="bi bi-pencil-square" style="color:gray; margin:5px; font-size: 25px;"></i>
-                                </a>
-                                <form method="post" action="@Url.Action("DeleteMember", "Members")" style="display: inline; margin: 0; padding: 0;">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@member.Id" />
-                                    <button type="submit" onclick="return confirm('Сигурни ли сте, че искате да изтриете този член?');"
-                                            style="border: none; background: none; padding: 0; display: inline; margin-left:5px;">
-                                        <i class="bi bi-trash3" style="color:red; margin:5px; font-size: 25px;"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        }
-                        else
-                        {
-                            <span class="text-muted">Не можете да изтриете собствения си акаунт.</span>
-                        }
-                    </td>
+                    @if (isAdmin)
+                    {
+                        <td style="vertical-align: central;">
+                            @if (member.UserId != currentUserId)
+                            {
+                                <div style="display: flex; justify-content:center;">
+                                    <a href="@Url.Action("EditMember", "Members", new { id = member.Id })" style="display: inline; margin-right:5px;">
+                                        <i class="bi bi-pencil-square" style="color:gray; margin:5px; font-size: 25px;"></i>
+                                    </a>
+                                    <form method="post" action="@Url.Action("DeleteMember", "Members")" style="display: inline; margin: 0; padding: 0;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@member.Id" />
+                                        <button type="submit" onclick="return confirm('Сигурни ли сте, че искате да изтриете този член?');"
+                                                style="border: none; background: none; padding: 0; display: inline; margin-left:5px;">
+                                            <i class="bi bi-trash3" style="color:red; margin:5px; font-size: 25px;"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Не можете да изтриете собствения си акаунт.</span>
+                            }
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
     </table>
 
-
-    <h3>Екип с покана:</h3>
-    <ul class="list-group">
-        @foreach (var invite in ViewBag.PendingInvitations as List<Aleris.Models.Invite>)
-        {
-            <li class="list-group-item">@invite.User.Email - Статус: Изчакване</li> <!-- Access the email via User -->
-        }
-    </ul>
+    @if(isAdmin)
+    {
+        <h3>Екип с покана:</h3>
+        <ul class="list-group">
+            @foreach (var invite in ViewBag.PendingInvitations as List<Aleris.Models.Invite>)
+            {
+                <li class="list-group-item">@invite.User.Email - Статус: Изчакване</li> <!-- Access the email via User -->
+            }
+        </ul>
+    }
 </div>
