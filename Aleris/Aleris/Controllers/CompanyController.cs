@@ -2,6 +2,7 @@
 using Aleris.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Aleris.Controllers
 {
@@ -147,24 +148,42 @@ namespace Aleris.Controllers
                 return NotFound();
             }
 
-            var purchases = await _context.CompanyPurchases
-                .Where(p => p.CompanyId == id)
-                .OrderBy(p => p.Date)
-                .ToListAsync();
+            var purchases = await _context.CompanyPurchases.Where(p => p.CompanyId == id).ToListAsync();
+            var sales = await _context.CompanySales.Where(s => s.CompanyId == id).ToListAsync();
 
-            var sales = await _context.CompanySales
-                .Where(s => s.CompanyId == id)
-                .OrderBy(s => s.Date)
-                .ToListAsync();
+            // Prepare data for the chart
+            var statisticsData = new
+            {
+                Purchases = purchases
+                    .GroupBy(p => p.Date.ToString("yyyy-MM-dd")) // Group by date
+                    .Select(g => new
+                    {
+                        Date = g.Key,
+                        TotalPrice = g.Sum(p => p.TotalPrice),
+                        Quantity = g.Sum(p => p.Quantity),
+                        Average = g.Average(p => p.TotalPrice / p.Quantity)
+                    })
+                    .ToList(),
 
-            var statistics = new CompanyStatistics(purchases, sales);
+                Sales = sales
+                    .GroupBy(s => s.Date.ToString("yyyy-MM-dd")) // Group by date
+                    .Select(g => new
+                    {
+                        Date = g.Key,
+                        TotalPrice = g.Sum(s => s.TotalPrice),
+                        Quantity = g.Sum(s => s.Quantity),
+                        Average = g.Average(s => s.TotalPrice / s.Quantity)
+                    })
+                    .ToList()
+            };
+
+            ViewData["StatisticsData"] = statisticsData;
 
             ViewData["IsCompanyPage"] = true;
             ViewData["CompanyName"] = company.Name;
 
-            return View("Statistics", statistics); 
+            return View("Statistics", company);
         }
-
 
         [HttpGet]
         public async Task<IActionResult> Purchases(int id)

@@ -1,34 +1,114 @@
-﻿@model Aleris.Models.CompanyStatistics
+﻿@model Aleris.Models.Company
 
 @{
     ViewData["Title"] = "Статистики";
+    var statisticsData = ViewData["StatisticsData"];
 }
 
 <div class="content">
-    <h1>Статистики за @Model.CompanyName:</h1>
-    <div class="chart-container">
-        <canvas id="statisticsChart"></canvas>
-    </div>
+    <h1>Статистики за @Model.Name:</h1>
 </div>
 
+<!-- Chart Container with a fixed height -->
+<div class="content" style="height: 650px;">
+    <canvas id="statisticsChart" style="width: 100%; height: 100%;"></canvas>
+</div>
+
+<!-- Include Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    window.onload = function () {
+        // Parse the statistics data passed from the controller
+        var statisticsData = @Html.Raw(Json.Serialize(statisticsData));
+
+        // Check if the data structure is valid
+        if (!statisticsData || !statisticsData.purchases || !statisticsData.sales) {
+            console.log("Invalid data structure");
+            return;
+        }
+
+        // Extract purchases and sales data
+        var purchases = statisticsData.purchases;
+        var sales = statisticsData.sales;
+
+        // Initialize arrays for dates, totals, quantities, and averages
+        var dates = [];
+        var purchaseTotals = [];
+        var saleTotals = [];
+        var purchaseQuantities = [];
+        var saleQuantities = [];
+        var purchaseAverages = [];
+        var saleAverages = [];
+
+        // Aggregate purchases by date
+        var purchaseMap = {};
+
+        purchases.forEach(function (purchase) {
+            var date = new Date(purchase.date).toLocaleDateString();
+            if (purchaseMap[date]) {
+                purchaseMap[date].total += purchase.totalPrice;
+                purchaseMap[date].quantity += purchase.quantity;
+            } else {
+                purchaseMap[date] = { total: purchase.totalPrice, quantity: purchase.quantity };
+            }
+        });
+
+        // Aggregate sales by date
+        var saleMap = {};
+
+        sales.forEach(function (sale) {
+            var date = new Date(sale.date).toLocaleDateString();
+            if (saleMap[date]) {
+                saleMap[date].total += sale.totalPrice;
+                saleMap[date].quantity += sale.quantity;
+            } else {
+                saleMap[date] = { total: sale.totalPrice, quantity: sale.quantity };
+            }
+        });
+
+        // Prepare data for charting
+        for (var date in purchaseMap) {
+            dates.push(date);
+            purchaseTotals.push(purchaseMap[date].total);
+            purchaseQuantities.push(purchaseMap[date].quantity);
+            purchaseAverages.push(purchaseMap[date].total / purchaseMap[date].quantity);
+        }
+
+        for (var date in saleMap) {
+            if (dates.indexOf(date) === -1) {
+                dates.push(date);
+            }
+            saleTotals.push(saleMap[date].total);
+            saleQuantities.push(saleMap[date].quantity);
+            saleAverages.push(saleMap[date].total / saleMap[date].quantity);
+        }
+
+        // Get the canvas context for the chart
         var ctx = document.getElementById('statisticsChart').getContext('2d');
-        var statisticsChart = new Chart(ctx, {
-            type: 'bar',
+
+        // If a chart already exists, destroy it first
+        if (window.statisticsChart instanceof Chart) {
+            window.statisticsChart.destroy();
+        }
+
+        // Create a new chart
+        window.statisticsChart = new Chart(ctx, {
+            type: 'line',
             data: {
-                labels: @Html.Raw(Json.Serialize(Model.Dates)),
+                labels: dates,
                 datasets: [
                     {
                         label: 'Покупки',
-                        data: @Html.Raw(Json.Serialize(Model.Purchases)),
-                        backgroundColor: 'blue'
+                        data: purchaseTotals,
+                        borderColor: 'blue',
+                        fill: false
                     },
                     {
                         label: 'Продажби',
-                        data: @Html.Raw(Json.Serialize(Model.Orders)),
-                        backgroundColor: 'green'
+                        data: saleTotals,
+                        borderColor: 'green',
+                        fill: false
                     }
                 ]
             },
@@ -36,38 +116,51 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Дата'
+                        }
+                    },
                     y: {
-                        beginAtZero: true
+                        title: {
+                            display: true,
+                            text: 'Сума'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            // Custom tooltip content
+                            label: function (context) {
+                                var index = context.dataIndex;
+                                var datasetIndex = context.datasetIndex;
+
+                                var quantity, avg, total;
+                                if (datasetIndex === 0) {
+                                    // Purchase data
+                                    total = purchaseTotals[index];
+                                    quantity = purchaseQuantities[index];
+                                    avg = purchaseAverages[index];
+                                } else {
+                                    // Sale data
+                                    total = saleTotals[index];
+                                    quantity = saleQuantities[index];
+                                    avg = saleAverages[index];
+                                }
+
+                                // Return the correct tooltip information
+                                return [
+                                    'Количество: ' + quantity,
+                                    'Сума: ' + total.toFixed(2),
+                                    'Средна стойност: ' + (avg ? avg.toFixed(2) : 0)
+                                ];
+                            }
+                        }
                     }
                 }
             }
         });
-    });
+    };
 </script>
-
-<style>
-    /* Основно съдържание */
-    .content {
-        padding: 20px;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden; /* Премахва скролването */
-    }
-
-    /* Графиката да се разпъва добре */
-    .chart-container {
-        width: 90%;
-        height: 80vh; /* По-голяма височина */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #statisticsChart {
-        width: 100% !important;
-        height: 100% !important;
-    }
-</style>
