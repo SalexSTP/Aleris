@@ -2,7 +2,7 @@
 @model (Aleris.Models.Company Company, Aleris.Models.CompanySettings Settings)
 
 @{
-    ViewData["Title"] = "Настройки на компанията";
+    ViewData["Title"] = "Настройки - " + Model.Company.Name;
     var currentUserId = Context.Session.GetInt32("UserId");
     var isAdmin = Model.Company.TeamMembers.Any(m => m.UserId == currentUserId && m.Role == Aleris.Models.UserRole.Admin); // Check if the current user is an admin
 }

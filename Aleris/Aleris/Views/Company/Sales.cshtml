@@ -1,7 +1,7 @@
 ﻿@model Aleris.Models.Company
 
 @{
-    ViewData["Title"] = Model.Name;
+    ViewData["Title"] = "Покупки - " + Model.Name;
     var currentUserId = Context.Session.GetInt32("UserId");
     var isAdmin = Model.TeamMembers.Any(m => m.UserId == currentUserId && m.Role == Aleris.Models.UserRole.Admin); // Check if the current user is an admin
     var isEditor = Model.TeamMembers.Any(m => m.UserId == currentUserId && m.Role == Aleris.Models.UserRole.Editor); // Check if the current user is an editor
@@ -58,7 +58,7 @@
             </tr>
         </thead>
         <tbody id="purchase-table-body">
-            @foreach (var sale in Model.Sales)
+            @foreach (var sale in Model.Sales.OrderByDescending(s => s.Date))
             {
                 <tr>
                     <td>@sale.Date.ToString("M/d/yyyy HH:mm:ss")</td>

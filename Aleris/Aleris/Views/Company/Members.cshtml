@@ -5,6 +5,8 @@
 @{
     var currentUserId = Context.Session.GetInt32("UserId");
     var isAdmin = Model.TeamMembers.Any(m => m.UserId == currentUserId && m.Role == Aleris.Models.UserRole.Admin); // Check if the current user is an admin
+
+    ViewData["Title"] = "Екип - " + Model.Name;
 }
 
 <div class="content">
