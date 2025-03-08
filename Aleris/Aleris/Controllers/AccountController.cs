@@ -19,6 +19,11 @@ namespace Aleris.Controllers
         // GET: Register
         public IActionResult Register()
         {
+            if (HttpContext.Session.GetString("UserEmail") != null)
+            {
+                return RedirectToAction("Index", "Home"); // Redirect if already logged in
+            }
+
             return View(new User());
         }
 
@@ -39,13 +44,24 @@ namespace Aleris.Controllers
                 _context.Users.Add(user);
                 _context.SaveChanges();
 
+                // Store user details in session
+                HttpContext.Session.SetString("UserEmail", user.Email);
+                HttpContext.Session.SetString("UserName", user.Name);
+                HttpContext.Session.SetInt32("UserId", user.Id);
+                isLogged = true;
+
                 return RedirectToAction("Index", "Home");
             }
 
-            return View(user);
+            return RedirectToAction("Index", "Home");
         }
         public IActionResult Login()
         {
+            if (HttpContext.Session.GetString("UserEmail") != null)
+            {
+                return RedirectToAction("Index", "Home"); // Redirect if already logged in
+            }
+
             return View(new User());
         }
 

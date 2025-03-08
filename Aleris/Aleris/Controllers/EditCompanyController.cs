@@ -12,8 +12,25 @@ namespace Aleris.Controllers
         }
 
         [HttpGet]
-        public IActionResult EditCompany(int id)
+        public async Task<IActionResult> EditCompanyAsync(int id)
         {
+            // Check if the user is logged in and has access to the company
+            if (!await UserHasAccessToCompany(id))
+            {
+                return RedirectToAction("Index", "Home"); // User is either not logged in or doesn't have access
+            }
+
+            // Check if the user has the required role (Admin)
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var hasAccess = await _context.CompanyMembers
+                .AnyAsync(cm => cm.CompanyId == id && cm.User.Email == userEmail &&
+                                (cm.Role == UserRole.Admin || cm.Role == UserRole.Editor));
+
+            if (!hasAccess)
+            {
+                return RedirectToAction("Index", "Home"); // User doesn't have admin or editor access
+            }
+
             // Retrieve the company and settings from the database
             var company = _context.Companies
                                   .Include(c => c.CompanySettings) // Ensure settings are loaded too
@@ -29,8 +46,24 @@ namespace Aleris.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditCompany(Company model)
+        public async Task<IActionResult> EditCompanyAsync(Company model)
         {
+            if (!await UserHasAccessToCompany(model.Id))
+            {
+                return RedirectToAction("Index", "Home"); // User is either not logged in or doesn't have access
+            }
+
+            // Check if the user has the required role (Admin)
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var hasAccess = await _context.CompanyMembers
+                .AnyAsync(cm => cm.CompanyId == model.Id && cm.User.Email == userEmail &&
+                                (cm.Role == UserRole.Admin || cm.Role == UserRole.Editor));
+
+            if (!hasAccess)
+            {
+                return RedirectToAction("Index", "Home"); // User doesn't have admin or editor access
+            }
+
             if (ModelState.IsValid)
             {
                 // Retrieve the existing company and its settings from the database
@@ -75,6 +108,5 @@ namespace Aleris.Controllers
             // If the model is not valid, return the same view with validation errors
             return View("EditCompany", model);
         }
-
     }
 }

@@ -2,9 +2,6 @@
 using Aleris.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Aleris.Controllers
 {
@@ -22,6 +19,20 @@ namespace Aleris.Controllers
             if (member == null)
             {
                 return NotFound();
+            }
+
+            if (!IsUserLoggedIn() || !await UserHasAccessToCompany(member.CompanyId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var currentUserEmail = HttpContext.Session.GetString("UserEmail");
+            var isAdmin = await _context.CompanyMembers
+                .AnyAsync(m => m.CompanyId == member.CompanyId && m.User.Email == currentUserEmail && m.Role == UserRole.Admin);
+
+            if (!isAdmin)
+            {
+                return RedirectToAction("Index", "Home");
             }
 
             // Pass available roles to the view
@@ -43,6 +54,21 @@ namespace Aleris.Controllers
             if (member == null)
             {
                 return NotFound();
+            }
+
+            if (!IsUserLoggedIn() || !await UserHasAccessToCompany(member.CompanyId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Check if the logged-in user is an admin of the company
+            var currentUserEmail = HttpContext.Session.GetString("UserEmail");
+            var isAdmin = await _context.CompanyMembers
+                .AnyAsync(m => m.CompanyId == member.CompanyId && m.User.Email == currentUserEmail && m.Role == UserRole.Admin);
+
+            if (!isAdmin)
+            {
+                return RedirectToAction("Index", "Home");
             }
 
             // Don't modify CompanyId, make sure it's preserved
@@ -95,6 +121,19 @@ namespace Aleris.Controllers
                 return NotFound(); // Return NotFound if the member doesn't exist
             }
 
+            if (!IsUserLoggedIn() || !UserHasAccessToCompany(member.CompanyId).Result)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Check if the logged-in user is an admin of the company
+            var isAdmin = _context.CompanyMembers.Any(m => m.CompanyId == member.CompanyId && m.User.Id == userId && m.Role == UserRole.Admin);
+
+            if (!isAdmin)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             // Check if the logged-in user is allowed to delete the member (e.g., they are not the member themselves)
             if (member.UserId == userId)
             {
@@ -121,12 +160,17 @@ namespace Aleris.Controllers
                 return NotFound();
             }
 
+            if (!IsUserLoggedIn() || !UserHasAccessToCompany(companyId).Result)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var currentUserId = HttpContext.Session.GetInt32("UserId");
             var isAdmin = company.TeamMembers.Any(m => m.UserId == currentUserId && m.Role == UserRole.Admin);
 
             if (!isAdmin)
             {
-                return Unauthorized();
+                return RedirectToAction("Index", "Home");
             }
 
             // Pass roles to the view
@@ -151,12 +195,17 @@ namespace Aleris.Controllers
                 return NotFound();
             }
 
+            if (!IsUserLoggedIn() || !UserHasAccessToCompany(model.CompanyId).Result)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var currentUserId = HttpContext.Session.GetInt32("UserId");
             var isAdmin = company.TeamMembers.Any(m => m.UserId == currentUserId && m.Role == UserRole.Admin);
 
             if (!isAdmin)
             {
-                return Unauthorized();
+                return RedirectToAction("Index", "Home");
             }
 
             var existingUser = _context.Users.FirstOrDefault(u => u.Email == model.Email);

@@ -12,8 +12,14 @@ namespace Aleris.Controllers
         }
 
         [HttpGet]
-        public IActionResult AddSale(int companyId)
+        public async Task<IActionResult> AddSaleAsync(int companyId)
         {
+            // Check if the user is logged in and has access to the company
+            if (!IsUserLoggedIn() || !await UserHasAccessToCompany(companyId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             var company = _context.Companies
                 .Include(c => c.Storage)
                 .FirstOrDefault(c => c.Id == companyId);
@@ -22,6 +28,17 @@ namespace Aleris.Controllers
             {
                 ViewBag.ErrorMessage = "Company not found!";
                 return View("Error");
+            }
+
+            // Check if the user has the required role (Admin or Editor) for the company
+            var userEmail = HttpContext.Session.GetString("UserEmail");
+            var hasAccess = await _context.CompanyMembers
+                .AnyAsync(cm => cm.CompanyId == companyId && cm.User.Email == userEmail &&
+                                (cm.Role == UserRole.Admin || cm.Role == UserRole.Editor));
+
+            if (!hasAccess)
+            {
+                return RedirectToAction("Index", "Home");
             }
 
             ViewBag.StorageProducts = company.Storage

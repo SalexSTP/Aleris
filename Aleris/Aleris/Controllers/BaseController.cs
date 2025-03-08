@@ -2,6 +2,7 @@
 using Aleris.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace Aleris.Controllers
 {
@@ -12,6 +13,21 @@ namespace Aleris.Controllers
         public BaseController(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        protected bool IsUserLoggedIn()
+        {
+            return !string.IsNullOrEmpty(HttpContext.Session.GetString("UserEmail"));
+        }
+
+        protected async Task<bool> UserHasAccessToCompany(int companyId)
+        {
+            if (!IsUserLoggedIn()) return false;
+
+            string? userEmail = HttpContext.Session.GetString("UserEmail");
+
+            return await _context.CompanyMembers
+                .AnyAsync(cm => cm.CompanyId == companyId && cm.User.Email == userEmail);
         }
 
         protected void PopulateCompaniesInViewBag()

@@ -3,6 +3,7 @@ using Aleris.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.ComponentModel.Design;
 
 namespace Aleris.Controllers
 {
@@ -12,26 +13,16 @@ namespace Aleris.Controllers
         {
         }
 
-        private async Task<bool> UserHasAccessToCompany(int companyId)
-        {
-            string? userEmail = HttpContext.Session.GetString("UserEmail");
-            if (string.IsNullOrEmpty(userEmail)) return false;
-
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-            if (user == null) return false;
-
-            return await _context.CompanyMembers
-                .AnyAsync(cm => cm.UserId == user.Id && cm.CompanyId == companyId);
-        }
-
         public IActionResult Index()
         {
+            if (!IsUserLoggedIn()) return RedirectToAction("Index", "Home");
             return View();
         }
 
         [HttpGet]
         public IActionResult CreateCompany()
         {
+            if (!IsUserLoggedIn()) return RedirectToAction("Index", "Home");
             return View(new Company());
         }
 
@@ -39,6 +30,8 @@ namespace Aleris.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateCompany(Company company)
         {
+            if (!IsUserLoggedIn()) return RedirectToAction("Index", "Home");
+
             if (ModelState.IsValid)
             {
                 var existingCompany = await _context.Companies
@@ -85,7 +78,7 @@ namespace Aleris.Controllers
         [HttpGet]
         public async Task<IActionResult> ConfigureSettings(int companyId)
         {
-            if (!await UserHasAccessToCompany(companyId))
+            if (!await UserHasAccessToCompany(companyId) || !IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -104,6 +97,8 @@ namespace Aleris.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveSettings(CompanySettings settings)
         {
+            if (!IsUserLoggedIn()) return RedirectToAction("Index", "Home");
+
             if (!ModelState.IsValid)
             {
                 return View("ConfigureSettings", settings);
@@ -137,7 +132,7 @@ namespace Aleris.Controllers
         [HttpGet]
         public async Task<IActionResult> Statistics(int id)
         {
-            if (!await UserHasAccessToCompany(id))
+            if (!await UserHasAccessToCompany(id) || !IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -188,7 +183,7 @@ namespace Aleris.Controllers
         [HttpGet]
         public async Task<IActionResult> Purchases(int id)
         {
-            if (!await UserHasAccessToCompany(id))
+            if (!await UserHasAccessToCompany(id) || !IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -213,7 +208,7 @@ namespace Aleris.Controllers
         [HttpGet]
         public async Task<IActionResult> Storage(int id)
         {
-            if (!await UserHasAccessToCompany(id))
+            if (!await UserHasAccessToCompany(id) || !IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -238,7 +233,7 @@ namespace Aleris.Controllers
         [HttpGet]
         public async Task<IActionResult> Sales(int id)
         {
-            if (!await UserHasAccessToCompany(id))
+            if (!await UserHasAccessToCompany(id) || !IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -263,7 +258,7 @@ namespace Aleris.Controllers
         [HttpGet]
         public async Task<IActionResult> Members(int id)
         {
-            if (!await UserHasAccessToCompany(id))
+            if (!await UserHasAccessToCompany(id) || !IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -293,7 +288,7 @@ namespace Aleris.Controllers
         [HttpGet]
         public async Task<IActionResult> Settings(int id)
         {
-            if (!await UserHasAccessToCompany(id))
+            if (!await UserHasAccessToCompany(id) || !IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Home");
             }
