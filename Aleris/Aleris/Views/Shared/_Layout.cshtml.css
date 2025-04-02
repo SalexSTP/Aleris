@@ -1,10 +1,25 @@
 ﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+header {
+    position: sticky !important;
+    top: 0;
+    z-index: 1;
+}
+
+.nav-item.dropdown {
+    position: relative; /* Ensures proper stacking of the dropdown */
+}
+
+.dropdown-menu {
+    position: absolute; /* Keep it positioned correctly */
+    z-index: 1;
+}
+
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 a {
@@ -48,12 +63,18 @@ button.accept-policy {
 }
 
 .sidebar {
-    height: 100vh;
+    height: 100%;
     width: 300px;
     background-color: #007bff;
     color: white;
-    padding-top: 20px;
+    margin-top: -15px;
     position: fixed;
+    z-index: 0;
+}
+
+.sidebar h4 {
+    margin-top: 50px !important;
+    margin-bottom: 20px;
 }
 
 .sidebar a {

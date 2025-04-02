@@ -26,9 +26,18 @@
                         @if (Context.Session.GetString("UserEmail") != null)
                         {
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="companiesDropdown" role="button" data-bs-toggle="dropdown">
-                                    Компании
-                                </a>
+                                @if (ViewData["IsCompanyPage"] != null)
+                                {
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="companiesDropdown" role="button" data-bs-toggle="dropdown">
+                                        @ViewData["CompanyName"]
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="nav-link dropdown-toggle text-dark" href="#" id="companiesDropdown" role="button" data-bs-toggle="dropdown">
+                                        Компании
+                                    </a>
+                                }
                                 <ul class="dropdown-menu">
                                     @if (ViewBag.Companies != null && ViewBag.Companies.Count > 0)
                                     {
@@ -104,7 +113,7 @@
     @if (ViewData["IsCompanyPage"] != null)
     {
         <div class="sidebar">
-            <h4 class="text-center" style="margin-bottom:30px;">@ViewData["CompanyName"]</h4>
+            <h4 class="text-center">@ViewData["CompanyName"]</h4>
             <a href="@Url.Action("Statistics", "Company", new { id = companyId })" class="@(currentAction == "Statistics" ? "active" : "")">
                 <i class="bi bi-bar-chart"></i> Статистики
             </a>

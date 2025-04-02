@@ -30,6 +30,7 @@ body {
     flex-direction: column;
     align-items: center; /* Centers horizontally */
     text-align: center; /* Centers text content */
+    z-index: -1;
 }
 
 h1 {
