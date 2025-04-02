@@ -2,6 +2,8 @@
 
 @{
     ViewData["Title"] = "Наличности - " + Model.Name;
+    var sortColumn = Context.Request.Query["sortColumn"];
+    var sortOrder = Context.Request.Query["sortOrder"];
 }
 
 <div class="content">
@@ -19,11 +21,24 @@
     <table class="purchase-table">
         <thead>
             <tr>
-                <th>Име на продукт</th>
-                <th>Количество</th>
-                <th>Тип на количество</th>
-                <th>Цена на продукт</th>
-                <th>Обща сума</th>
+                @foreach (var column in new[] { "ProductName", "Quantity", "UnitType", "ProductPrice", "TotalPrice" })
+                {
+                    string nextSortOrder = sortColumn == column && sortOrder == "asc"
+                    ? "desc"
+                    : sortColumn == column && sortOrder == "desc"
+                    ? null // Reset sorting
+                    : "asc";
+
+                    string icon = sortColumn == column
+                    ? (sortOrder == "asc" ? "bi-arrow-up" : "bi-arrow-down")
+                    : "bi-arrow-down-up";
+
+                    <th class="table-header">
+                        <a href="@(nextSortOrder != null ? $"?sortColumn={column}&sortOrder={nextSortOrder}" : "?")" class="sort-link">
+                            @column <i class="bi @icon"></i>
+                        </a>
+                    </th>
+                }
             </tr>
         </thead>
         <tbody id="purchase-table-body">
@@ -84,5 +99,24 @@
     #search-icon {
         font-size: 20px;
         color: #555;
+    }
+
+    .table-header a {
+        text-decoration: none;
+        color: inherit;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .table-header i {
+        margin-left: 5px;
+    }
+
+    .table-header {
+        cursor: pointer;
+    }
+
+    .sort-link {
+        color: #007bff;
     }
 </style>

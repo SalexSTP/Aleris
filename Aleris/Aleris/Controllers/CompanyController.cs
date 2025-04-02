@@ -143,8 +143,8 @@ namespace Aleris.Controllers
                 return NotFound();
             }
 
-            var purchases = await _context.CompanyPurchases.Where(p => p.CompanyId == id).ToListAsync();
-            var sales = await _context.CompanySales.Where(s => s.CompanyId == id).ToListAsync();
+            var purchases = await _context.CompanyPurchases.Where(p => p.CompanyId == id).OrderBy(p => p.Date).ToListAsync();
+            var sales = await _context.CompanySales.Where(s => s.CompanyId == id).OrderBy(p => p.Date).ToListAsync();
 
             // Prepare data for the chart
             var statisticsData = new
@@ -181,22 +181,39 @@ namespace Aleris.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Purchases(int id)
+        public async Task<IActionResult> Purchases(int id, string sortColumn = "Date", string sortOrder = "desc")
         {
             if (!await UserHasAccessToCompany(id) || !IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            var company = _context.Companies
-                .Include(c => c.Purchases)  // Ensure Purchases are included
+            var company = await _context.Companies
+                .Include(c => c.Purchases)
                 .Include(c => c.TeamMembers)
-                .FirstOrDefault(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (company == null)
             {
                 return NotFound();
             }
+
+            // Sorting logic
+            Func<Aleris.Models.CompanyPurchase, object> keySelector = sortColumn switch
+            {
+                "Date" => p => p.Date,
+                "Name" => p => p.Name,
+                "Quantity" => p => p.Quantity,
+                "UnitType" => p => p.UnitType,
+                "ProductPrice" => p => p.ProductPrice,
+                "TotalPrice" => p => p.TotalPrice,
+                _ => p => p.Date
+            };
+
+            // Apply sorting
+            company.Purchases = (sortOrder == "asc")
+                ? company.Purchases.OrderBy(keySelector).ToList()
+                : company.Purchases.OrderByDescending(keySelector).ToList();
 
             ViewData["IsCompanyPage"] = true;
             ViewData["CompanyName"] = company.Name;
@@ -206,22 +223,38 @@ namespace Aleris.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Storage(int id)
+        public async Task<IActionResult> Storage(int id, string sortColumn = "ProductName", string sortOrder = "asc")
         {
             if (!await UserHasAccessToCompany(id) || !IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            var company = _context.Companies
+            var company = await _context.Companies
                 .Include(c => c.Storage)  // Ensure Storages are included
                 .Include(c => c.TeamMembers)
-                .FirstOrDefault(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (company == null)
             {
                 return NotFound();
             }
+
+            // Sorting logic
+            Func<Aleris.Models.CompanyStorage, object> keySelector = sortColumn switch
+            {
+                "ProductName" => s => s.ProductName,
+                "Quantity" => s => s.Quantity,
+                "UnitType" => s => s.UnitType,
+                "ProductPrice" => s => s.ProductPrice,
+                "TotalPrice" => s => s.TotalPrice,
+                _ => s => s.ProductName
+            };
+
+            // Apply sorting
+            company.Storage = (sortOrder == "asc")
+                ? company.Storage.OrderBy(keySelector).ToList()
+                : company.Storage.OrderByDescending(keySelector).ToList();
 
             ViewData["IsCompanyPage"] = true;
             ViewData["CompanyName"] = company.Name;
@@ -231,22 +264,39 @@ namespace Aleris.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Sales(int id)
+        public async Task<IActionResult> Sales(int id, string sortColumn = "Date", string sortOrder = "desc")
         {
             if (!await UserHasAccessToCompany(id) || !IsUserLoggedIn())
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            var company = _context.Companies
-              .Include(c => c.Sales)  // Ensure Sales are included
-              .Include(c => c.TeamMembers)
-              .FirstOrDefault(c => c.Id == id);
+            var company = await _context.Companies
+                .Include(c => c.Sales)
+                .Include(c => c.TeamMembers)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (company == null)
             {
                 return NotFound();
             }
+
+            // Sorting logic
+            Func<Aleris.Models.CompanySale, object> keySelector = sortColumn switch
+            {
+                "Date" => s => s.Date,
+                "Name" => s => s.Name,
+                "Quantity" => s => s.Quantity,
+                "UnitType" => s => s.UnitType,
+                "ProductPrice" => s => s.ProductPrice,
+                "TotalPrice" => s => s.TotalPrice,
+                _ => s => s.Date
+            };
+
+            // Apply sorting
+            company.Sales = (sortOrder == "asc")
+                ? company.Sales.OrderBy(keySelector).ToList()
+                : company.Sales.OrderByDescending(keySelector).ToList();
 
             ViewData["IsCompanyPage"] = true;
             ViewData["CompanyName"] = company.Name;

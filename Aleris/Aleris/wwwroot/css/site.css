@@ -96,3 +96,19 @@ h1 {
     background-color: #f8f9fa;
     font-weight: bold;
 }
+
+/* css for tables on purchases, sales and storage */
+.table-header {
+    color: black;
+    padding: 10px;
+}
+
+.sort-link {
+    color: black;
+    text-decoration: none;
+}
+
+.sort-link:hover {
+    color: blue;
+    text-decoration: none;
+}
