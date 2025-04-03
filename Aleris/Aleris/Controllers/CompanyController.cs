@@ -181,7 +181,7 @@ namespace Aleris.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Purchases(int id, string sortColumn = "Date", string sortOrder = "desc")
+        public async Task<IActionResult> Purchases(int id, string sortColumn = "Дата", string sortOrder = "desc")
         {
             if (!await UserHasAccessToCompany(id) || !IsUserLoggedIn())
             {
@@ -201,12 +201,12 @@ namespace Aleris.Controllers
             // Sorting logic
             Func<Aleris.Models.CompanyPurchase, object> keySelector = sortColumn switch
             {
-                "Date" => p => p.Date,
-                "Name" => p => p.Name,
-                "Quantity" => p => p.Quantity,
-                "UnitType" => p => p.UnitType,
-                "ProductPrice" => p => p.ProductPrice,
-                "TotalPrice" => p => p.TotalPrice,
+                "Дата" => p => p.Date,
+                "Име на продукт" => p => p.Name,
+                "Количество" => p => p.Quantity,
+                "Тип на количество" => p => p.UnitType,
+                "Цена на продукт" => p => p.ProductPrice,
+                "Обща сума" => p => p.TotalPrice,
                 _ => p => p.Date
             };
 
@@ -223,7 +223,7 @@ namespace Aleris.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Storage(int id, string sortColumn = "ProductName", string sortOrder = "asc")
+        public async Task<IActionResult> Storage(int id, string sortColumn = "Име на продукт", string sortOrder = "asc")
         {
             if (!await UserHasAccessToCompany(id) || !IsUserLoggedIn())
             {
@@ -243,11 +243,11 @@ namespace Aleris.Controllers
             // Sorting logic
             Func<Aleris.Models.CompanyStorage, object> keySelector = sortColumn switch
             {
-                "ProductName" => s => s.ProductName,
-                "Quantity" => s => s.Quantity,
-                "UnitType" => s => s.UnitType,
-                "ProductPrice" => s => s.ProductPrice,
-                "TotalPrice" => s => s.TotalPrice,
+                "Име на продукт" => s => s.ProductName,
+                "Количество" => s => s.Quantity,
+                "Тип на количество" => s => s.UnitType,
+                "Цена на продукт" => s => s.ProductPrice,
+                "Обща сума" => s => s.TotalPrice,
                 _ => s => s.ProductName
             };
 
@@ -264,7 +264,7 @@ namespace Aleris.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Sales(int id, string sortColumn = "Date", string sortOrder = "desc")
+        public async Task<IActionResult> Sales(int id, string sortColumn = "Дата", string sortOrder = "desc")
         {
             if (!await UserHasAccessToCompany(id) || !IsUserLoggedIn())
             {
@@ -284,12 +284,12 @@ namespace Aleris.Controllers
             // Sorting logic
             Func<Aleris.Models.CompanySale, object> keySelector = sortColumn switch
             {
-                "Date" => s => s.Date,
-                "Name" => s => s.Name,
-                "Quantity" => s => s.Quantity,
-                "UnitType" => s => s.UnitType,
-                "ProductPrice" => s => s.ProductPrice,
-                "TotalPrice" => s => s.TotalPrice,
+                "Дата" => s => s.Date,
+                "Име на продукт" => s => s.Name,
+                "Количество" => s => s.Quantity,
+                "Тип на количество" => s => s.UnitType,
+                "Цена на продукт" => s => s.ProductPrice,
+                "Обща сума" => s => s.TotalPrice,
                 _ => s => s.Date
             };
 

@@ -52,7 +52,7 @@
     <table class="purchase-table">
         <thead>
             <tr>
-                @foreach (var column in new[] { "Date", "Name", "Quantity", "UnitType", "ProductPrice", "TotalPrice" })
+                @foreach (var column in new[] { "Дата", "Име на продукт", "Количество", "Тип на количество", "Цена на продукт", "Обща сума" })
                 {
                     string nextSortOrder = sortColumn == column && sortOrder == "asc" 
                         ? "desc" 
