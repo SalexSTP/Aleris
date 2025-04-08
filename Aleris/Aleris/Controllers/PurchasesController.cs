@@ -26,7 +26,7 @@ namespace Aleris.Controllers
             if (company == null)
             {
                 // Return a view with an error message or something similar instead of NotFound()
-                ViewBag.ErrorMessage = "Company not found!";
+                ViewBag.ErrorMessage = "Компанията не беше намерена!";
                 return View("Error"); // Assuming you have an Error view to display the message
             }
 
@@ -71,12 +71,12 @@ namespace Aleris.Controllers
             if (!companyExists)
             {
                 // Handle the case when the company doesn't exist
-                ModelState.AddModelError("CompanyNotFound", "The company does not exist.");
+                ModelState.AddModelError("CompanyNotFound", "Компанията не съществува.");
                 return View(purchase);  // Return view with error
             }
 
             // Edit Quantity by the Unit Type
-            if (purchase.UnitType == "Num.")
+            if (purchase.UnitType == "бр.")
             {
                 purchase.Quantity = (int)Math.Ceiling(purchase.Quantity);
             }
@@ -128,6 +128,160 @@ namespace Aleris.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Purchases", "Company", new { id = companyId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditPurchaseAsync(int id)
+        {
+            if (!IsUserLoggedIn())
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var purchase = await _context.CompanyPurchases
+                .Include(p => p.Company)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (purchase == null)
+            {
+                ViewBag.ErrorMessage = "Покупката не беше намерена.";
+                return View("Error");
+            }
+
+            var companyId = purchase.CompanyId;
+
+            if (!await UserHasAccessToCompany(companyId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var storageProducts = await _context.CompanyStorages
+                .Where(p => p.CompanyId == companyId)
+                .Select(p => p.ProductName)
+                .ToListAsync();
+
+            ViewBag.StorageProducts = storageProducts;
+            ViewBag.CompanyId = companyId;
+
+            return View("EditPurchase", purchase);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditPurchase(CompanyPurchase purchase)
+        {
+            if (!ModelState.IsValid)
+            {
+                var storageProducts = await _context.CompanyStorages
+                    .Where(s => s.CompanyId == purchase.CompanyId)
+                    .Select(s => s.ProductName)
+                    .ToListAsync();
+
+                ViewBag.StorageProducts = storageProducts;
+                ViewBag.CompanyId = purchase.CompanyId;
+
+                return View("EditPurchase", purchase);
+            }
+
+            var existingPurchase = await _context.CompanyPurchases
+                .FirstOrDefaultAsync(p => p.Id == purchase.Id);
+
+            if (existingPurchase == null)
+            {
+                ViewBag.ErrorMessage = "Покупката не беше намерена.";
+                return View("Error");
+            }
+
+            if (!await UserHasAccessToCompany(existingPurchase.CompanyId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var product = await _context.CompanyStorages
+                .FirstOrDefaultAsync(p => p.Id == existingPurchase.ProductId && p.CompanyId == existingPurchase.CompanyId);
+
+            if (product == null)
+            {
+                ViewBag.ErrorMessage = "Продуктът в склада не беше намерен.";
+                return View("Error");
+            }
+
+            // STEP 1: Rollback the old purchase
+            product.UpdateStorageOnPurchase(-existingPurchase.Quantity, -existingPurchase.TotalPrice);
+
+            // STEP 2: Calculate new purchase values
+            existingPurchase.UnitType = purchase.UnitType;
+            existingPurchase.ProductPrice = purchase.ProductPrice;
+
+            // Apply unit-based quantity formatting
+            existingPurchase.Quantity = purchase.UnitType == "бр."
+                ? (int)Math.Ceiling(purchase.Quantity)
+                : purchase.Quantity;
+
+            existingPurchase.CalculateTotalPrice();
+
+            // STEP 3: Check if applying new purchase will result in negative quantity
+            decimal tempQuantity = product.Quantity + existingPurchase.Quantity;
+            if (tempQuantity < 0)
+            {
+                // Rollback the rollback to restore original storage state
+                product.UpdateStorageOnPurchase(existingPurchase.Quantity, existingPurchase.TotalPrice);
+
+                ViewBag.StorageProducts = await _context.CompanyStorages
+                    .Where(s => s.CompanyId == purchase.CompanyId)
+                    .Select(s => s.ProductName)
+                    .ToListAsync();
+
+                ViewBag.CompanyId = purchase.CompanyId;
+                ModelState.AddModelError("", "Редакцията ще доведе до отрицателно количество в склада.");
+                return View("EditPurchase", existingPurchase);
+            }
+
+            // STEP 4: Apply new values
+            product.UpdateStorageOnPurchase(existingPurchase.Quantity, existingPurchase.TotalPrice);
+
+            _context.CompanyStorages.Update(product);
+            _context.CompanyPurchases.Update(existingPurchase);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Purchases", "Company", new { id = existingPurchase.CompanyId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePurchase(int id)
+        {
+            var purchase = await _context.CompanyPurchases
+                .FirstOrDefaultAsync(p => p.Id == id);
+
+            if (purchase == null || !await UserHasAccessToCompany(purchase.CompanyId))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var storage = await _context.CompanyStorages.FirstOrDefaultAsync(s => s.Id == purchase.ProductId);
+
+            if (storage == null)
+            {
+                TempData["Error"] = "Продуктът не е намерен в склада.";
+                return RedirectToAction("Purchases", "Company", new { id = purchase.CompanyId });
+            }
+
+            // Check for negative quantity
+            if (storage.Quantity - purchase.Quantity < 0)
+            {
+                TempData["Error"] = "Не може да изтриете покупката, защото това ще доведе до отрицателно количество в склада.";
+                return RedirectToAction("Purchases", "Company", new { id = purchase.CompanyId });
+            }
+
+            // Apply update
+            storage.UpdateStorageOnPurchase(-purchase.Quantity, -purchase.TotalPrice);
+
+            _context.CompanyStorages.Update(storage);
+            _context.CompanyPurchases.Remove(purchase);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Purchases", "Company", new { id = purchase.CompanyId });
         }
     }
 }

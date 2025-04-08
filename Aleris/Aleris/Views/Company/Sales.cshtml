@@ -1,7 +1,7 @@
 ﻿@model Aleris.Models.Company
 
 @{
-    ViewData["Title"] = "Покупки - " + Model.Name;
+    ViewData["Title"] = "Продажби - " + Model.Name;
     var currentUserId = Context.Session.GetInt32("UserId");
     var isAdmin = Model.TeamMembers.Any(m => m.UserId == currentUserId && m.Role == Aleris.Models.UserRole.Admin);
     var isEditor = Model.TeamMembers.Any(m => m.UserId == currentUserId && m.Role == Aleris.Models.UserRole.Editor);
@@ -19,8 +19,8 @@
 
         @if (isAdmin || isEditor)
         {
-            <a href="@Url.Action("AddPurchase", "Purchases", new { companyId = Model.Id })" class="btn btn-success">
-                + Добавяне на покупка
+            <a href="@Url.Action("AddSale", "Sales", new { companyId = Model.Id })" class="btn btn-success">
+                + Добавяне на продажба
             </a>
         }
     </div>
@@ -73,38 +73,35 @@
             </tr>
         </thead>
         <tbody id="purchase-table-body">
-            @foreach (var purchase in Model.Sales)
+            @foreach (var sale in Model.Sales)
             {
                 <tr>
-                    <td>@purchase.Date.ToString("M/d/yyyy HH:mm:ss")</td>
-                    <td>@purchase.Name</td>
-                    <td>@purchase.Quantity</td>
-                    <td>@purchase.UnitType</td>
-                    <td>@purchase.ProductPrice.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</td>
-                    <td>@purchase.TotalPrice.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</td>
+                    <td>@sale.Date.ToString("M/d/yyyy HH:mm:ss")</td>
+                    <td>@sale.Name</td>
+                    <td>@sale.Quantity</td>
+                    <td>@sale.UnitType</td>
+                    <td>@sale.ProductPrice.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</td>
+                    <td>@sale.TotalPrice.ToString("C", new System.Globalization.CultureInfo("bg-BG"))</td>
+                    <td class="action-icons">
+                        @if (isAdmin || isEditor)
+                        {
+                            <a href="@Url.Action("EditSale", "Sales", new { id = sale.Id })" class="btn btn-sm btn-outline-primary me-1" title="Редактирай">
+                                <i class="bi bi-pencil-square"></i>
+                            </a>
+                            <form asp-action="DeleteSale" asp-controller="Sales" method="post" style="display:inline;">
+                                <input type="hidden" name="id" value="@sale.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Изтрий"
+                                        onclick="return confirm('Сигурни ли сте, че искате да изтриете тази продажба?');">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
-
-<style>
-    .table-header {
-        background-color: black;
-        color: black;
-        padding: 10px;
-    }
-
-    .sort-link {
-        color: black;
-        text-decoration: none;
-    }
-
-    .sort-link:hover {
-        color: blue;
-        text-decoration: none;
-    }
-</style>
 
 
 <!-- script for filtering form -->

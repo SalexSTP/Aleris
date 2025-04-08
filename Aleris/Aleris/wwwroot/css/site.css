@@ -89,7 +89,8 @@ h1 {
 .purchase-table th, .purchase-table td {
     border-bottom: 1px solid #ccc;
     padding: 10px;
-    text-align: left;
+    text-align: center;
+    vertical-align: middle !important;
 }
 
 .purchase-table th {
@@ -99,6 +100,7 @@ h1 {
 
 /* css for tables on purchases, sales and storage */
 .table-header {
+    background-color: black;
     color: black;
     padding: 10px;
 }
@@ -111,4 +113,24 @@ h1 {
 .sort-link:hover {
     color: blue;
     text-decoration: none;
+}
+
+.actions-header {
+    width: 120px;
+    text-align: center;
+}
+
+td.action-icons {
+    text-align: center;
+    vertical-align: middle;
+}
+
+td.action-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    font-size: 1.1rem;
 }

@@ -1,0 +1,59 @@
+﻿@model Aleris.Models.CompanyPurchase
+
+@{
+    ViewData["Title"] = "Edit Purchase";
+
+    var storageProducts = ViewBag.StorageProducts as List<string> ?? new List<string>();
+}
+
+<div class="content">
+    <h1>Редактирай Покупка</h1>
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <form method="post" action="@Url.Action("EditPurchase", "Purchases")">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <input type="hidden" name="CompanyId" value="@Model.CompanyId" />
+        <input type="hidden" name="ProductId" value="@Model.ProductId" />
+
+        <div class="form-group">
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" class="form-control" readonly />
+            <datalist id="storageProducts">
+                @foreach (var product in ViewBag.StorageProducts)
+
+                {
+                    <option value="@product"></option>
+                }
+            </datalist>
+        </div>
+
+        <div class="form-group">
+            <label for="quantity">Количество:</label>
+            <input type="number" id="quantity" name="Quantity" class="form-control" min="0.01" step="0.01" required value="@Model.Quantity" />
+        </div>
+
+        <div class="form-group">
+            <label>Мерна единица:</label>
+            <select asp-for="UnitType" class="form-control">
+                <option value="кг." selected="@("кг." == Model.UnitType)">Килограми</option>
+                <option value="бр." selected="@("бр." == Model.UnitType)">Брой</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="productPrice">Цена на продукт:</label>
+            <input type="number" id="productPrice" name="ProductPrice" class="form-control" min="0.01" step="0.01" required value="@Model.ProductPrice" />
+        </div>
+
+        <input type="hidden" name="TotalPrice" value="@Model.TotalPrice" />
+
+        <button type="submit" class="btn btn-primary">Запази Промените</button>
+    </form>
+</div>
+
+<style>
+    .content {
+        margin-left: 0px !important;
+    }
+</style>
