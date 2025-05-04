@@ -37,6 +37,7 @@
         <div class="form-group">
             <label for="quantity">Количество</label>
             <input type="number" id="quantityField" name="Quantity" class="form-control" min="0.01" step="0.01" required />
+            <span id="maxQuantityInfo" class="text-muted" style="display: block; margin-top: 5px;"></span>
             <span class="text-danger" id="quantityError"></span>
         </div>
 
@@ -55,6 +56,7 @@
         const unitTypeDisplay = document.getElementById("unitTypeDisplay");
         const quantityField = document.getElementById("quantityField");
         const quantityError = document.getElementById("quantityError");
+        const maxQuantityInfo = document.getElementById("maxQuantityInfo");
         const productNameField = document.getElementById("productNameField");
         const unitTypeField = document.getElementById("unitTypeField");
 
@@ -71,14 +73,15 @@
             // Update display for unit type
             unitTypeDisplay.value = unitType;
 
-            // Set max quantity based on selected product
+            // Set max quantity and show info
             quantityField.max = quantity;
+            maxQuantityInfo.textContent = "Налично количество: " + quantity + " " + unitType;
         });
 
         quantityField.addEventListener("input", function () {
             const maxQuantity = parseFloat(quantityField.max);
             if (parseFloat(quantityField.value) > maxQuantity) {
-                quantityError.textContent = "Cannot exceed available stock!";
+                quantityError.textContent = "Наличността не позволява по-голямо количество.";
                 quantityField.value = maxQuantity;
             } else {
                 quantityError.textContent = "";

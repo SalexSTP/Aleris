@@ -1,9 +1,7 @@
 ﻿@model Aleris.Models.CompanyPurchase
 
 @{
-    ViewData["Title"] = "Edit Purchase";
-
-    var storageProducts = ViewBag.StorageProducts as List<string> ?? new List<string>();
+    ViewData["Title"] = "Редактирай покупка";
 }
 
 <div class="content">
@@ -17,15 +15,8 @@
         <input type="hidden" name="ProductId" value="@Model.ProductId" />
 
         <div class="form-group">
-            <label asp-for="Name" class="control-label"></label>
+            <label class="control-label">Име на продукта:</label>
             <input asp-for="Name" class="form-control" readonly />
-            <datalist id="storageProducts">
-                @foreach (var product in ViewBag.StorageProducts)
-
-                {
-                    <option value="@product"></option>
-                }
-            </datalist>
         </div>
 
         <div class="form-group">
@@ -55,5 +46,9 @@
 <style>
     .content {
         margin-left: 0px !important;
+    }
+
+    button {
+        margin-top: 15px;
     }
 </style>

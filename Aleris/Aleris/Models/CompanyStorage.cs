@@ -42,9 +42,6 @@ namespace Aleris.Models
 
         public void UpdateStorageOnSale(decimal saleQuantity)
         {
-            if (saleQuantity > Quantity)
-                throw new InvalidOperationException("Not enough stock available.");
-
             Quantity -= saleQuantity;
             CalculateTotalPrice();
         }

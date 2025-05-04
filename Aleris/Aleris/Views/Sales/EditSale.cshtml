@@ -1,0 +1,112 @@
+﻿@model Aleris.Models.CompanySale
+
+@{
+    ViewData["Title"] = "Редактирай продажба";
+
+    // Get max quantity from ViewBag
+    var maxQuantity = ViewBag.MaxQuantity ?? 0;
+}
+
+<div class="content">
+    <h1>Редактирай Продажба</h1>
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <form method="post" action="@Url.Action("EditSale", "Sales")">
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <input type="hidden" name="CompanyId" value="@Model.CompanyId" />
+        <input type="hidden" name="ProductId" value="@Model.ProductId" />
+
+        <div class="form-group">
+            <label class="control-label">Име на продукта:</label>
+            <input asp-for="Name" class="form-control" readonly />
+        </div>
+
+        <div class="form-group">
+            <label for="quantity">Количество:</label>
+            <input type="number" id="quantity" name="Quantity" class="form-control"
+                   min="0.01" step="0.01" required value="@Model.Quantity" />
+            <span class="text-muted" id="quantityInfo" style="display: block; margin-top: 5px;">
+                Максимално количество: @maxQuantity
+            </span>
+            <span class="text-danger" id="quantityError"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Мерна единица:</label>
+            <select asp-for="UnitType" class="form-control" id="unitType">
+                <option value="кг." selected="@("кг." == Model.UnitType)">Килограми</option>
+                <option value="бр." selected="@("бр." == Model.UnitType)">Брой</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="productPrice">Единична цена:</label>
+            <input type="number" id="productPrice" name="ProductPrice" class="form-control" min="0.01" step="0.01" required value="@Model.ProductPrice" />
+        </div>
+
+        <input type="hidden" name="TotalPrice" value="@Model.TotalPrice" />
+
+        <button type="submit" class="btn btn-primary">Запази Промените</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const quantityField = document.getElementById("quantity");
+    const quantityError = document.getElementById("quantityError");
+    const unitTypeField = document.getElementById("unitType");
+
+    // Initial storage max quantity from ViewBag
+    let maxQuantity = @ViewBag.MaxQuantity ?? 0;
+
+    // Update max quantity based on unit type (e.g., for "бр." vs "кг.")
+    function updateMaxQuantity() {
+        const unitType = unitTypeField.value;
+
+        if (unitType === "бр.") {
+            maxQuantity = Math.floor(@ViewBag.MaxQuantity); // Floor for countable items (pieces)
+        } else {
+            maxQuantity = @ViewBag.MaxQuantity; // Keep original max quantity for weight (kg)
+        }
+
+        // Update the display of max quantity in the span
+        document.getElementById("quantityInfo").textContent = `Максимално количество: ${maxQuantity}`;
+    }
+
+    // Handle changes in unit type dropdown
+    unitTypeField.addEventListener("change", updateMaxQuantity);
+
+    // Handle quantity input
+    quantityField.addEventListener("input", function () {
+        let quantity = parseFloat(quantityField.value);
+
+        // If unit is "бр.", ceil the quantity to the nearest greater whole number
+        if (unitTypeField.value === "бр.") {
+            quantity = Math.ceil(quantity);  // Ceil the quantity for pieces (e.g., 2.3 becomes 3)
+            quantityField.value = quantity;  // Update the input field with the ceiled value
+        }
+
+        // Validate quantity against max allowed stock
+        if (quantity > maxQuantity) {
+            quantityError.textContent = "Наличността не позволява по-голямо количество.";
+            quantityField.value = maxQuantity;  // Set to max allowed quantity if exceeded
+        } else {
+            quantityError.textContent = "";
+        }
+    });
+
+    // Initialize max quantity based on unit type
+    updateMaxQuantity();
+});
+</script>
+
+<style>
+    .content {
+        margin-left: 0px !important;
+    }
+
+    button {
+        margin-top: 15px;
+    }
+</style>
